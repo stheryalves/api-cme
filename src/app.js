@@ -3,8 +3,8 @@ const app = express();
 const bodyParser = require('body-parser');
 const cors = require('cors')
 
-const brandRoute = require('./routes/brandRoute')
-const modelRoute = require('./routes/modelRoute')
+const brandRoute = require('./routes/autoclaveBrandRoute')
+const modelRoute = require('./routes/autoclaveModelRoute')
 
 app.use(express.json());
 app.use(bodyParser.json());
@@ -16,7 +16,7 @@ app.get('/', (req, res) => {
     return res.json({ message: '👋 Welcome to CME API!' })
 })
 
-app.use('/brand', brandRoute)
-app.use('/model', modelRoute)
+app.use('/autoclaveBrand', brandRoute)
+app.use('/autoClaveModel', modelRoute)
 
 module.exports = app;
