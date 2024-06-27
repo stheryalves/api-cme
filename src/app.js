@@ -5,6 +5,7 @@ const cors = require('cors')
 
 const brandRoute = require('./routes/autoclaveBrandRoute')
 const modelRoute = require('./routes/autoclaveModelRoute')
+const leadRoute = require('./routes/leadRoute')
 
 app.use(express.json());
 app.use(bodyParser.json());
@@ -18,5 +19,6 @@ app.get('/', (req, res) => {
 
 app.use('/autoclaveBrand', brandRoute)
 app.use('/autoClaveModel', modelRoute)
+app.use('/lead', leadRoute)
 
 module.exports = app;

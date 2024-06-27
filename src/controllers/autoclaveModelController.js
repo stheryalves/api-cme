@@ -1,5 +1,16 @@
 const autoclaveModels = [
-    { 'id': 1, 'autoclaveModelName': 'A1', 'totalChamberVolumeLt': 102, 'usefulChamberVolumeLt': 81, 'averageTotalCycleTimeHTMin': 50, 'loadingAndUnloadingTimeMin': 10, 'cycleTimeMin': 60, 'dailyTimeBDTestMin': 30, 'dailyTimeWarmUpMin': 20, 'price': 100 },
+    {
+        'id': 1,
+        'autoclaveModelName': 'A1',
+        'totalChamberVolumeLt': 102,
+        'usefulChamberVolumeLt': 81,
+        'averageTotalCycleTimeHTMin': 50,
+        'loadingAndUnloadingTimeMin': 10,
+        'cycleTimeMin': 60,
+        'dailyTimeBDTestMin': 30,
+        'dailyTimeWarmUpMin': 20,
+        'price': 100
+    },
 
 ];
 
