@@ -1,24 +1,27 @@
 const express = require('express');
 const app = express();
-const bodyParser = require('body-parser');
+app.use(express.json());
+
 const cors = require('cors')
+
+require('dotenv').config();
+const conn = require('./database/conn');
+conn();
 
 const brandRoute = require('./routes/autoclaveBrandRoute')
 const modelRoute = require('./routes/autoclaveModelRoute')
 const leadRoute = require('./routes/leadRoute')
 
-app.use(express.json());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true }));
 app.use(cors())
 
 
-app.get('/', (req, res) => {
+app.get('/', (_, res) => {
     return res.json({ message: '👋 Welcome to CME API!' })
 })
 
 app.use('/autoclaveBrand', brandRoute)
-app.use('/autoClaveModel', modelRoute)
+app.use('/autoclaveModel', modelRoute)
 app.use('/lead', leadRoute)
 
 module.exports = app;

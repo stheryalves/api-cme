@@ -1,70 +1,70 @@
-const autoclaveModels = [
-    {
-        'id': 1,
-        'autoclaveModelName': 'A1',
-        'totalChamberVolumeLt': 102,
-        'usefulChamberVolumeLt': 81,
-        'averageTotalCycleTimeHTMin': 50,
-        'loadingAndUnloadingTimeMin': 10,
-        'cycleTimeMin': 60,
-        'dailyTimeBDTestMin': 30,
-        'dailyTimeWarmUpMin': 20,
-        'price': 100
-    },
+const Autoclave = require('../schemas/schemaAutoclave');
 
-];
-
-getAutoclaveModels = (req, res) => {
-    res.status(200).send(autoclaveModels);
-}
-
-getOneAutoclaveModel = (req, res) => {
-    let id = req.params.id;
-    const autoclaveModel = autoclaveModels.find((item) => item.id === Number(id));
-
-    if (autoclaveModel) {
-        res.status(200).send(autoclaveModel);
-    } else {
-        res.status(404).send('Modelo não encontrado!')
-
+const getAutoclaveModels = async (req, res) => {
+    try {
+        const autoclaveModels = await Autoclave.findAll();
+        res.status(200).send(autoclaveModels);
+    } catch (error) {
+        res.status(406).send('Erro ao buscar os modelos de autoclave.');
     }
 }
 
-createOneAutoclaveModel = (req, res) => {
-    const autoclaveModel = req.body;
-    if (Object.keys(autoclaveModel).length > 0) {
-        autoclaveModels.push(autoclaveModel)
-        res.status(201).send(autoclaveModel)
-    } else {
-        res.status(406).send('Ops, não foi possível adicionar esse modelo!')
-    }
-
-}
-
-updateOneAutoclaveModel = (req, res) => {
+const getOneAutoclaveModel = async (req, res) => {
     let id = req.params.id;
-    let index = findAutoclaveModelIndex(id);
-    autoclaveModels[index] = req.body;
-    res.status(201).send('Modelo atualizado com sucesso!')
-
-}
-
-deleteOneAutoclaveModel = (req, res) => {
-    let id = req.params.id;
-    let index = findAutoclaveModelIndex(id);
-
-    if (index === -1) {
-        return res.status(404).send('Não foi possível excluir: ID não encontrado.');
+    try {
+        const autoclaveModel = await Autoclave.findByPk(id);
+        if (autoclaveModel) {
+            res.status(200).send(autoclaveModel);
+        } else {
+            res.status(404).send('Modelo não encontrado!');
+        }
+    } catch (error) {
+        res.status(500).send('Erro ao buscar o modelo de autoclave.');
     }
-
-    autoclaveModels.splice(index, 1);
-    res.status(200).send('Modelo removido com sucesso!')
 }
 
-findAutoclaveModelIndex = (id) => {
-    const index = autoclaveModels.findIndex((item) => item.id === Number(id));
-    return index
+const createOneAutoclaveModel = async (req, res) => {
+    console.log(req.body)
+    const { autoclaveModel } = req.body;
+    try {
+        const newAutoclaveModel = await Autoclave.create({ autoclaveModel });
+        res.status(201).send(newAutoclaveModel);
+    } catch (error) {
+        res.status(406).send('Ops, não foi possível adicionar esse modelo!');
+        console.log(error)
+    }
 }
 
+const updateOneAutoclaveModel = async (req, res) => {
+    let id = req.params.id;
+    try {
+        const updated = await Autoclave.update(req.body, {
+            where: { id: id }
+        });
+        if (updated[0] === 1) {
+            res.status(200).send('Modelo atualizado com sucesso!');
+        } else {
+            res.status(404).send('Modelo não encontrado!');
+        }
+    } catch (error) {
+        res.status(500).send('Erro ao atualizar o modelo de autoclave.');
+    }
+}
+
+const deleteOneAutoclaveModel = async (req, res) => {
+    let id = req.params.id;
+    try {
+        const deleted = await Autoclave.destroy({
+            where: { id: id }
+        });
+        if (deleted) {
+            res.status(200).send('Modelo removido com sucesso!');
+        } else {
+            res.status(404).send('Modelo não encontrado!');
+        }
+    } catch (error) {
+        res.status(500).send('Erro ao excluir o modelo de autoclave.');
+    }
+}
 
 module.exports = { getAutoclaveModels, getOneAutoclaveModel, createOneAutoclaveModel, updateOneAutoclaveModel, deleteOneAutoclaveModel };

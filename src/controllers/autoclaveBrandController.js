@@ -1,61 +1,78 @@
-const autoclaveBrands = [
-    { 'id': 1, 'brandName': 'Marca A' },
-    { 'id': 2, 'brandName': 'Marca B' },
-    { 'id': 3, 'brandName': 'Marca C' },
-    { 'id': 4, 'brandName': 'Marca D' },
-];
+const Brand = require('../schemas/schemaBrand');
 
-getAutoclaveBrands = (req, res) => {
-    res.status(200).send(autoclaveBrands);
-}
-
-getOneAutoclaveBrand = (req, res) => {
-    let id = req.params.id;
-    const autoclaveBrand = autoclaveBrands.find((item) => item.id === Number(id));
-
-    if (autoclaveBrand) {
-        res.status(200).send(autoclaveBrand);
-    } else {
-        res.status(404).send('Marca não encontrada!')
-
+const getAutoclaveBrands = async (req, res) => {
+    try {
+        const brands = await Brand.findAll();
+        res.status(200).json(brands);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
     }
 }
 
-createOneAutoclaveBrand = (req, res) => {
-    const autoclaveBrand = req.body;
-    if (Object.keys(autoclaveBrand).length > 0) {
-        autoclaveBrands.push(autoclaveBrand)
-        res.status(201).send(autoclaveBrand)
-    } else {
-        res.status(406).send('Ops, não foi possível adicionar essa marca!')
+const getOneAutoclaveBrand = async (req, res) => {
+    const id = req.params.id;
+    try {
+        const brand = await Brand.findByPk(id);
+        if (brand) {
+            res.status(200).json(brand);
+        } else {
+            res.status(404).send('Marca não encontrada!');
+        }
+    } catch (error) {
+        res.status(500).json({ message: error.message });
     }
-
 }
 
-updateOneAutoclaveBrand = (req, res) => {
-    let id = req.params.id;
-    let index = findAutoclaveBrandIndex(id);
-    autoclaveBrands[index] = req.body;
-    res.status(201).send('Marca atualizada com sucesso!')
-
-}
-
-deleteOneAutoclaveBrand = (req, res) => {
-    let id = req.params.id;
-    let index = findAutoclaveBrandIndex(id);
-
-    if (index === -1) {
-        return res.status(404).send('Não foi possível excluir: ID não encontrado.');
+const createOneAutoclaveBrand = async (req, res) => {
+    const { brandName } = req.body;
+    try {
+        const newBrand = await Brand.create({ brandName });
+        res.status(201).json(newBrand);
+    } catch (error) {
+        if (error.parent && error.parent.sqlState) {
+            const brandNotUnique = error.parent.sqlState
+            if (brandNotUnique) {
+                return res.status(409).json({ message: 'O marca já existe' })
+            }
+        }
     }
-
-    autoclaveBrands.splice(index, 1);
-    res.status(200).send('Marca removida com sucesso!')
 }
 
-findAutoclaveBrandIndex = (id) => {
-    const index = autoclaveBrands.findIndex((item) => item.id === Number(id));
-    return index
+const updateOneAutoclaveBrand = async (req, res) => {
+    const id = req.params.id;
+    const { brandName } = req.body;
+    try {
+        const updatedBrand = await Brand.findByPk(id);
+        if (updatedBrand) {
+            await updatedBrand.update({ brandName });
+            res.status(200).send('Marca atualizada com sucesso!');
+        } else {
+            res.status(404).send('Marca não encontrada!');
+        }
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
 }
 
+const deleteOneAutoclaveBrand = async (req, res) => {
+    const id = req.params.id;
+    try {
+        const deletedBrand = await Brand.findByPk(id);
+        if (deletedBrand) {
+            await deletedBrand.destroy();
+            res.status(200).send('Marca removida com sucesso!');
+        } else {
+            res.status(404).send('Não foi possível excluir: ID não encontrado.');
+        }
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
 
-module.exports = { getAutoclaveBrands, getOneAutoclaveBrand, createOneAutoclaveBrand, updateOneAutoclaveBrand, deleteOneAutoclaveBrand };
+module.exports = {
+    getAutoclaveBrands,
+    getOneAutoclaveBrand,
+    createOneAutoclaveBrand,
+    updateOneAutoclaveBrand,
+    deleteOneAutoclaveBrand
+};

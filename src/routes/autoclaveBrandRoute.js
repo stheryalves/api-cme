@@ -1,11 +1,11 @@
 const express = require('express');
 const router = express.Router();
-const autoclaveBrandController = require('../controllers/autoclaveBrandController');
+const { getAutoclaveBrands, getOneAutoclaveBrand, createOneAutoclaveBrand, updateOneAutoclaveBrand, deleteOneAutoclaveBrand } = require('../controllers/autoclaveBrandController');
 
-router.get('/', autoclaveBrandController.getAutoclaveBrands);
-router.get('/:id', autoclaveBrandController.getOneAutoclaveBrand);
-router.post('/', autoclaveBrandController.createOneAutoclaveBrand);
-router.put('/:id', autoclaveBrandController.updateOneAutoclaveBrand);
-router.delete('/:id', autoclaveBrandController.deleteOneAutoclaveBrand);
+router.get('/', getAutoclaveBrands);
+router.get('/:id', getOneAutoclaveBrand);
+router.post('/', createOneAutoclaveBrand);
+router.put('/:id', updateOneAutoclaveBrand);
+router.delete('/:id', deleteOneAutoclaveBrand);
 
 module.exports = router;
