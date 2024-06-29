@@ -51,7 +51,7 @@ const Autoclave = sequelize.define('autoclave', {
             model: Brand,
             key: 'id'
         }
-    }    
+    }
 }, {
     tableName: 'autoclave',
     timestamps: true,

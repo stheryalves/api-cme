@@ -23,17 +23,52 @@ const getOneAutoclaveModel = async (req, res) => {
     }
 }
 
+// const createOneAutoclaveModel = async (req, res) => {
+//     const { autoclaveModel } = req.body;
+//     try {
+//         const newAutoclaveModel = await Autoclave.create({ autoclaveModel });
+//         res.status(201).json(newAutoclaveModel);
+//     } catch (error) {
+//         res.status(406).send('Ops, não foi possível adicionar esse modelo!');
+//         console.log(error)
+//     }
+// }
+
 const createOneAutoclaveModel = async (req, res) => {
-    console.log(req.body)
-    const { autoclaveModel } = req.body;
+    console.log('Request Body:', req.body);  // Adicione este log para verificar o corpo da requisição
+
+    const {
+        autoclaveModelName,
+        totalChamberVolumeLt,
+        usefulChamberVolumeLt,
+        averageTotalCycleTimeHTMin,
+        loadingAndUnloadingTimeMin,
+        cycleTimeMin,
+        dailyTimeBDTestMin,
+        dailyTimeWarmUpMin,
+        price,
+        id_brand
+    } = req.body;
+
     try {
-        const newAutoclaveModel = await Autoclave.create({ autoclaveModel });
+        const newAutoclaveModel = await Autoclave.create({
+            autoclaveModelName,
+            totalChamberVolumeLt,
+            usefulChamberVolumeLt,
+            averageTotalCycleTimeHTMin,
+            loadingAndUnloadingTimeMin,
+            cycleTimeMin,
+            dailyTimeBDTestMin,
+            dailyTimeWarmUpMin,
+            price,
+            id_brand
+        });
         res.status(201).send(newAutoclaveModel);
     } catch (error) {
         res.status(406).send('Ops, não foi possível adicionar esse modelo!');
-        console.log(error)
+        console.log(error);
     }
-}
+};
 
 const updateOneAutoclaveModel = async (req, res) => {
     let id = req.params.id;
