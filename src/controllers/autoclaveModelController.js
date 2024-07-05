@@ -31,7 +31,8 @@ const getOneAutoclaveModel = async (req, res) => {
 //     } catch (error) {
 //         res.status(406).send('Ops, não foi possível adicionar esse modelo!');
 //         console.log(error)
-//     }
+//     } //edit
+
 // }
 
 const createOneAutoclaveModel = async (req, res) => {
