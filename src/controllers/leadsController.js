@@ -46,7 +46,7 @@ const createOneLead = async (req, res) => {
             res.status(406).json({ message: 'Ops, não foi possível adicionar esse cliente!' });
         }
     } catch (error) {
-        res.status(500).send('Erro ao adicionar cliente.');
+        res.status(500).json({ message: error.message });
     }
 };
 

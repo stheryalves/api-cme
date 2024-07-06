@@ -7,24 +7,29 @@ const Lead = sequelize.define('lead', {
         primaryKey: true,
         autoIncrement: true
     },
-    customer: {
+    nomeLead: {
         type: DataTypes.STRING(45),
         allowNull: false,
+    },
+    hospitalNome: {
+        type: DataTypes.STRING(45),
+        allowNull: false
     },
     hospitalEmail: {
         type: DataTypes.STRING(45),
         allowNull: false,
         unique: true
     },
-    hospitalName: {
+    hospitalContato: {
         type: DataTypes.STRING(45),
         allowNull: false
     },
     cnpj: {
         type: DataTypes.STRING(45),
-        allowNull: false
+        allowNull: true,
+        defaultValue: 0
     },
-    role: {
+    cargo: {
         type: DataTypes.STRING(45),
         allowNull: false
     },
@@ -32,71 +37,90 @@ const Lead = sequelize.define('lead', {
         type: DataTypes.STRING(45),
         allowNull: false
     },
-    number: {
-        type: DataTypes.INTEGER,
-        allowNull: false
-    },
-    street: {
+    numero: {
         type: DataTypes.STRING(45),
         allowNull: false
     },
-    neighborhood: {
+    rua: {
         type: DataTypes.STRING(45),
         allowNull: false
     },
-    city: {
+    bairro: {
         type: DataTypes.STRING(45),
         allowNull: false
     },
-    state: {
+    cidade: {
         type: DataTypes.STRING(45),
         allowNull: false
     },
-    needing: {
+    estado: {
         type: DataTypes.STRING(45),
         allowNull: false
     },
-    intervalCMEHour: {
+    numeroSalasCirurgias: { 
         type: DataTypes.INTEGER,
         allowNull: false
     },
-    numberOfSurgery: {
+    numeroCirurgiaSalaDia: {
         type: DataTypes.INTEGER,
         allowNull: false
     },
-    numberOfSurgeryRoomDay: {
+    numeroLeitoUTI: {
         type: DataTypes.INTEGER,
         allowNull: false
     },
-    numberBedUTI: {
+    numeroLeitoInternacao: {
         type: DataTypes.INTEGER,
         allowNull: false
     },
-    numberBedInter: {
+    numeroLeitoRPA: {
         type: DataTypes.INTEGER,
         allowNull: false
     },
-    numberBedRPA: {
+    numeroLeitoObs: {
         type: DataTypes.INTEGER,
         allowNull: false
     },
-    numberBedObs: {
+    numeroLeitoHospitalDia: {
         type: DataTypes.INTEGER,
         allowNull: false
     },
-    numberBedHospitalDay: {
-        type: DataTypes.INTEGER,
+    momentoAtualEmpreendimento: {
+        type: DataTypes.STRING(45),
         allowNull: false
     },
-    acceptOneReport: {
-        type: DataTypes.BOOLEAN,
+    tipoEngenhariaClinica: {
+        type: DataTypes.STRING(45),
         allowNull: false
     },
-    acceptContact: {
-        type: DataTypes.BOOLEAN,
+    obsEngenhariaClinica: {
+        type: DataTypes.STRING(45),
+        allowNull: true
+    },
+    precisaCME: {
+        type: DataTypes.STRING(45),
         allowNull: false
     },
-
+    busco: {
+        type: DataTypes.STRING(45),
+        allowNull: false
+    },
+    /*diaSemanaCirurgia: {
+        type: DataTypes.STRING(45), //array
+        allowNull: false
+    },*/
+    intervaloPicoCME: {
+        type: DataTypes.STRING(45),
+        allowNull: false
+    },
+    tipoProcessamento: {
+        type: DataTypes.STRING(45),
+        allowNull: false
+    },
+    aceitarTermos: {
+        type: DataTypes.STRING(45),
+        allowNull: false
+    },
 }, {
     tableName: 'lead',
     timestamps: true,

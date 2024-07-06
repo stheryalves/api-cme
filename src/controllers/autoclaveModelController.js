@@ -25,6 +25,7 @@ const getOneAutoclaveModel = async (req, res) => {
 
 const createOneAutoclaveModel = async (req, res) => {
     const {
+        marcaAutoclave,
         modeloAutoclave,
         volumeTotCamaraLt,
         volumeUtilCamaraLt,
@@ -33,7 +34,19 @@ const createOneAutoclaveModel = async (req, res) => {
         tempoClicloCarDescMin,
         tempoTestDiarioBDMin,
         tempoDiarioAquecimentoMaqMin,
-        marcaAutoclave
+        tempoDisponivelDiarioMin,
+        producaoHospitalVolDiarioMaterialLt,
+        volumeProcessadoIntervaloPicoLt90totDiario,
+        intervaloDiarioPicoMin,
+        numMaxCiclosDia,
+        numMaxCiclosIntervaloPico,
+        aproveitamentoCamaraPorcent,
+        numAutoclaves,
+        numAutoclavesUmaEmManutencao,
+        capProcessamIntervaloPicoTodasAutoclavesOnLt,
+        horasTrabalhoAtenderVolTotalHr,
+        capUtilizTodasAutoclavesIntervaloPicoPorcent,
+        preco
     } = req.body;
 
     if (!modeloAutoclave) {
@@ -48,6 +61,7 @@ const createOneAutoclaveModel = async (req, res) => {
 
     try {
         const newAutoclaveModel = await Autoclave.create({
+            marcaAutoclave,
             modeloAutoclave,
             volumeTotCamaraLt,
             volumeUtilCamaraLt,
@@ -56,11 +70,23 @@ const createOneAutoclaveModel = async (req, res) => {
             tempoClicloCarDescMin,
             tempoTestDiarioBDMin,
             tempoDiarioAquecimentoMaqMin,
-            marcaAutoclave
+            tempoDisponivelDiarioMin,
+            producaoHospitalVolDiarioMaterialLt,
+            volumeProcessadoIntervaloPicoLt90totDiario,
+            intervaloDiarioPicoMin,
+            numMaxCiclosDia,
+            numMaxCiclosIntervaloPico,
+            aproveitamentoCamaraPorcent,
+            numAutoclaves,
+            numAutoclavesUmaEmManutencao,
+            capProcessamIntervaloPicoTodasAutoclavesOnLt,
+            horasTrabalhoAtenderVolTotalHr,
+            capUtilizTodasAutoclavesIntervaloPicoPorcent,
+            preco
         });
         res.status(201).send(newAutoclaveModel);
     } catch (error) {
-        res.status(500).send('Erro ao adicionar esse modelo!');
+        res.status(500).json({ message: error.message });
     }
 };
 

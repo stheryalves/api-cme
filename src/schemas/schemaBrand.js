@@ -12,8 +12,12 @@ const Brand = sequelize.define('brand', {
         allowNull: false,
         unique: true
     },
+    tipoEquipamento: {
+        type: DataTypes.STRING(45),
+        allowNull: false,
+    },
 }, {
-    tableName: 'brands',
+    tableName: 'marca',
     timestamps: true
 });
 

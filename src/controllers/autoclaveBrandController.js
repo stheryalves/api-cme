@@ -45,7 +45,7 @@ const createOneAutoclaveBrand = async (req, res) => {
             res.status(406).json({ message: 'Ops, não foi possível adicionar essa marca!' });
         }
     } catch (error) {
-        res.status(500).send('Erro ao adicionar marca.');
+        res.status(500).json({ message: error.message });
     }
 };
 
@@ -53,7 +53,7 @@ const updateOneAutoclaveBrand = async (req, res) => {
     const id = req.params.id;
     const { nomeMarca } = req.body;
 
-    if (!nomeMarca) {
+    if (!nomeMarca )  {
         return res.status(400).json({ message: 'Marca não fornecida.Por favor digite uma marca!' });
     }
 

@@ -8,6 +8,14 @@ const Autoclave = sequelize.define('autoclave', {
         primaryKey: true,
         autoIncrement: true
     },
+    marcaAutoclave: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+            model: Brand,
+            key: 'id'
+        }
+    },
     modeloAutoclave: {
         type: DataTypes.STRING(45),
         allowNull: false,
@@ -31,7 +39,8 @@ const Autoclave = sequelize.define('autoclave', {
     },
     tempoClicloCarDescMin: {
         type: DataTypes.INTEGER,
-        allowNull: false
+        allowNull: true,
+        defaultValue: 0
     },
     tempoTestDiarioBDMin: {
         type: DataTypes.INTEGER,
@@ -41,14 +50,70 @@ const Autoclave = sequelize.define('autoclave', {
         type: DataTypes.INTEGER,
         allowNull: false
     },
-    marcaAutoclave: {
+    tempoDisponivelDiarioMin: {
         type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-            model: Brand,
-            key: 'id'
-        }
-    }
+        allowNull: true,
+        defaultValue: 0
+    },
+    producaoHospitalVolDiarioMaterialLt: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
+    volumeProcessadoIntervaloPicoLt90totDiario: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        defaultValue: 0
+    },
+    intervaloDiarioPicoMin: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        defaultValue: 0
+    },
+    numMaxCiclosDia: {
+        type: DataTypes.FLOAT,
+        allowNull: true,
+        defaultValue: 0.0
+    },
+    numMaxCiclosIntervaloPico: {
+        type: DataTypes.FLOAT,
+        allowNull: true,
+        defaultValue: 0.0
+    },
+    aproveitamentoCamaraPorcent: {
+        type: DataTypes.FLOAT,
+        allowNull: true,
+        defaultValue: 0.0
+    },
+    numAutoclaves: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
+    numAutoclavesUmaEmManutencao: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        defaultValue: 0
+    },
+    capProcessamIntervaloPicoTodasAutoclavesOnLt: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        defaultValue: 0
+    },
+    horasTrabalhoAtenderVolTotalHr: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        defaultValue: 0
+    },
+    capUtilizTodasAutoclavesIntervaloPicoPorcent: {
+        type: DataTypes.FLOAT,
+        allowNull: true,
+        defaultValue: 0.0
+    },
+    preco: {
+        type: DataTypes.FLOAT,
+        allowNull: true,
+        defaultValue: 0.0
+    },
+
 }, {
     tableName: 'autoclave',
     timestamps: true,
