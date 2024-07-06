@@ -8,43 +8,40 @@ const Autoclave = sequelize.define('autoclave', {
         primaryKey: true,
         autoIncrement: true
     },
-    autoclaveModelName: {
+    modeloAutoclave: {
         type: DataTypes.STRING(45),
         allowNull: false,
+        unique: true
     },
-    totalChamberVolumeLt: {
+    volumeTotCamaraLt: {
         type: DataTypes.INTEGER,
         allowNull: false
     },
-    usefulChamberVolumeLt: {
+    volumeUtilCamaraLt: {
         type: DataTypes.INTEGER,
         allowNull: false
     },
-    averageTotalCycleTimeHTMin: {
+    medTotTempoCicloATMin: {
         type: DataTypes.INTEGER,
         allowNull: false
     },
-    loadingAndUnloadingTimeMin: {
+    tempoCargaDescargaMin: {
         type: DataTypes.INTEGER,
         allowNull: false
     },
-    cycleTimeMin: {
+    tempoClicloCarDescMin: {
         type: DataTypes.INTEGER,
         allowNull: false
     },
-    dailyTimeBDTestMin: {
+    tempoTestDiarioBDMin: {
         type: DataTypes.INTEGER,
         allowNull: false
     },
-    dailyTimeWarmUpMin: {
+    tempoDiarioAquecimentoMaqMin: {
         type: DataTypes.INTEGER,
         allowNull: false
     },
-    price: {
-        type: DataTypes.INTEGER,
-        allowNull: false
-    },
-    id_brand: {
+    marcaAutoclave: {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {

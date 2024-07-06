@@ -5,7 +5,7 @@ const getAutoclaveModels = async (req, res) => {
         const autoclaveModels = await Autoclave.findAll();
         res.status(200).send(autoclaveModels);
     } catch (error) {
-        res.status(406).send('Erro ao buscar os modelos de autoclave.');
+        res.status(500).json({ message: error.message });
     }
 }
 
@@ -19,64 +19,70 @@ const getOneAutoclaveModel = async (req, res) => {
             res.status(404).send('Modelo não encontrado!');
         }
     } catch (error) {
-        res.status(500).send('Erro ao buscar o modelo de autoclave.');
+        res.status(500).json({ message: error.message });
     }
 }
 
-// const createOneAutoclaveModel = async (req, res) => {
-//     const { autoclaveModel } = req.body;
-//     try {
-//         const newAutoclaveModel = await Autoclave.create({ autoclaveModel });
-//         res.status(201).json(newAutoclaveModel);
-//     } catch (error) {
-//         res.status(406).send('Ops, não foi possível adicionar esse modelo!');
-//         console.log(error)
-//     } //edit
-
-// }
-
 const createOneAutoclaveModel = async (req, res) => {
-    console.log('Request Body:', req.body);  // Adicione este log para verificar o corpo da requisição
-
     const {
-        autoclaveModelName,
-        totalChamberVolumeLt,
-        usefulChamberVolumeLt,
-        averageTotalCycleTimeHTMin,
-        loadingAndUnloadingTimeMin,
-        cycleTimeMin,
-        dailyTimeBDTestMin,
-        dailyTimeWarmUpMin,
-        price,
-        id_brand
+        modeloAutoclave,
+        volumeTotCamaraLt,
+        volumeUtilCamaraLt,
+        medTotTempoCicloATMin,
+        tempoCargaDescargaMin,
+        tempoClicloCarDescMin,
+        tempoTestDiarioBDMin,
+        tempoDiarioAquecimentoMaqMin,
+        marcaAutoclave
     } = req.body;
+
+    if (!modeloAutoclave) {
+        return res.status(400).json({ message: 'Modelo da autoclave não fornecido.' });
+    }
+
+    const existingModel = await Autoclave.findOne({ where: { modeloAutoclave } });
+
+    if (existingModel) {
+        return res.status(409).json({ message: 'O Modelo já foi cadastrado.' });
+    }
 
     try {
         const newAutoclaveModel = await Autoclave.create({
-            autoclaveModelName,
-            totalChamberVolumeLt,
-            usefulChamberVolumeLt,
-            averageTotalCycleTimeHTMin,
-            loadingAndUnloadingTimeMin,
-            cycleTimeMin,
-            dailyTimeBDTestMin,
-            dailyTimeWarmUpMin,
-            price,
-            id_brand
+            modeloAutoclave,
+            volumeTotCamaraLt,
+            volumeUtilCamaraLt,
+            medTotTempoCicloATMin,
+            tempoCargaDescargaMin,
+            tempoClicloCarDescMin,
+            tempoTestDiarioBDMin,
+            tempoDiarioAquecimentoMaqMin,
+            marcaAutoclave
         });
         res.status(201).send(newAutoclaveModel);
     } catch (error) {
-        res.status(406).send('Ops, não foi possível adicionar esse modelo!');
-        console.log(error);
+        res.status(500).send('Erro ao adicionar esse modelo!');
     }
 };
 
 const updateOneAutoclaveModel = async (req, res) => {
-    let id = req.params.id;
+    const id = req.params.id;
+    const { modeloAutoclave } = req.body;
+
     try {
+        if (!modeloAutoclave) {
+            return res.status(400).json({ message: 'Modelo da autoclave não fornecido.' });
+        }
+
+        const existingModel = await Autoclave.findOne({ where: { modeloAutoclave } });
+
+        if (existingModel && existingModel.id !== parseInt(id)) {
+            return res.status(409).json({ message: 'Modelo já cadastrado no banco de dados.' });
+        }
+
         const updated = await Autoclave.update(req.body, {
             where: { id: id }
         });
+
         if (updated[0] === 1) {
             res.status(200).send('Modelo atualizado com sucesso!');
         } else {
@@ -99,7 +105,7 @@ const deleteOneAutoclaveModel = async (req, res) => {
             res.status(404).send('Modelo não encontrado!');
         }
     } catch (error) {
-        res.status(500).send('Erro ao excluir o modelo de autoclave.');
+        res.status(500).json({ message: error.message });
     }
 }
 

@@ -7,10 +7,11 @@ const Brand = sequelize.define('brand', {
         primaryKey: true,
         autoIncrement: true
     },
-    brandName: {
+    nomeMarca: {
         type: DataTypes.STRING(45),
         allowNull: false,
-    },    
+        unique: true
+    },
 }, {
     tableName: 'brands',
     timestamps: true

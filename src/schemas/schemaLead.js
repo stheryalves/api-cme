@@ -13,7 +13,8 @@ const Lead = sequelize.define('lead', {
     },
     hospitalEmail: {
         type: DataTypes.STRING(45),
-        allowNull: false
+        allowNull: false,
+        unique: true
     },
     hospitalName: {
         type: DataTypes.STRING(45),

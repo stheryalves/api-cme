@@ -24,27 +24,49 @@ const getOneAutoclaveBrand = async (req, res) => {
 }
 
 const createOneAutoclaveBrand = async (req, res) => {
-    const { brandName } = req.body;
     try {
-        const newBrand = await Brand.create({ brandName });
-        res.status(201).json(newBrand);
-    } catch (error) {
-        if (error.parent && error.parent.sqlState) {
-            const brandNotUnique = error.parent.sqlState
-            if (brandNotUnique) {
-                return res.status(409).json({ message: 'O marca já existe' })
-            }
+        const brand = req.body;
+        const { nomeMarca } = brand;
+
+        if (!nomeMarca) {
+            return res.status(400).json({ message: 'Marca não fornecida.Por favor digite uma marca!' });
         }
+
+        const existingBrand = await Brand.findOne({ where: { nomeMarca } });
+
+        if (existingBrand) {
+            return res.status(409).json({ message: 'A Marca já foi cadastrada.' });
+        }
+
+        if (Object.keys(brand).length > 0) {
+            const newBrand = await Brand.create(brand);
+            res.status(201).json(newBrand);
+        } else {
+            res.status(406).json({ message: 'Ops, não foi possível adicionar essa marca!' });
+        }
+    } catch (error) {
+        res.status(500).send('Erro ao adicionar marca.');
     }
-}
+};
 
 const updateOneAutoclaveBrand = async (req, res) => {
     const id = req.params.id;
-    const { brandName } = req.body;
+    const { nomeMarca } = req.body;
+
+    if (!nomeMarca) {
+        return res.status(400).json({ message: 'Marca não fornecida.Por favor digite uma marca!' });
+    }
+
+    const existingBrand = await Brand.findOne({ where: { nomeMarca } });
+
+    if (existingBrand) {
+        return res.status(409).json({ message: 'Marca já cadastrada no banco de dados.' });
+    }
+
     try {
         const updatedBrand = await Brand.findByPk(id);
         if (updatedBrand) {
-            await updatedBrand.update({ brandName });
+            await updatedBrand.update({ nomeMarca });
             res.status(200).send('Marca atualizada com sucesso!');
         } else {
             res.status(404).send('Marca não encontrada!');
