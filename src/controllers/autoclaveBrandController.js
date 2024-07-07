@@ -51,13 +51,13 @@ const createOneAutoclaveBrand = async (req, res) => {
 
 const updateOneAutoclaveBrand = async (req, res) => {
     const id = req.params.id;
-    const { nomeMarca } = req.body;
+    const { nomeMarca, tipoEquipamento } = req.body;
 
-    if (!nomeMarca )  {
+    if (!nomeMarca) {
         return res.status(400).json({ message: 'Marca não fornecida.Por favor digite uma marca!' });
     }
 
-    const existingBrand = await Brand.findOne({ where: { nomeMarca } });
+    const existingBrand = await Brand.findOne({ where: { nomeMarca, tipoEquipamento } });
 
     if (existingBrand) {
         return res.status(409).json({ message: 'Marca já cadastrada no banco de dados.' });
@@ -66,7 +66,7 @@ const updateOneAutoclaveBrand = async (req, res) => {
     try {
         const updatedBrand = await Brand.findByPk(id);
         if (updatedBrand) {
-            await updatedBrand.update({ nomeMarca });
+            await updatedBrand.update({ nomeMarca, tipoEquipamento });
             res.status(200).send('Marca atualizada com sucesso!');
         } else {
             res.status(404).send('Marca não encontrada!');
