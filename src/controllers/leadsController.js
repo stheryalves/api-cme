@@ -61,7 +61,9 @@ const updateOneLead = async (req, res) => {
 
         const existingLead = await Lead.findOne({ where: { hospitalEmail } });
 
+
         if (existingLead) {
+            console.log(`🔎 AQUIII: ${lead}`)
             return res.status(409).json({ message: 'Email já cadastrado no banco de dados.' });
         }
 
@@ -76,7 +78,7 @@ const updateOneLead = async (req, res) => {
             res.status(404).send('Cliente não encontrado!');
         }
     } catch (error) {
-        res.status(500).send('Erro ao atualizar cliente.');
+        res.status(500).json({ message: error.message });
     }
 };
 
