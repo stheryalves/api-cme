@@ -52,6 +52,7 @@ const createOneLead = async (req, res) => {
 
 const updateOneLead = async (req, res) => {
     try {
+        const { id } = req.params;
         const lead = req.body;
         const { hospitalEmail } = lead;
 
@@ -61,27 +62,23 @@ const updateOneLead = async (req, res) => {
 
         const existingLead = await Lead.findOne({ where: { hospitalEmail } });
 
-
-        if (existingLead) {
-            console.log(`🔎 AQUIII: ${lead}`)
+        if (existingLead && existingLead.id !== parseInt(id)) {
             return res.status(409).json({ message: 'Email já cadastrado no banco de dados.' });
         }
 
-        const id = req.params.id;
-        const updatedLead = await Lead.update(req.body, {
+        const [updated] = await Lead.update(lead, {
             where: { id }
         });
 
-        if (updatedLead[0] > 0) {
-            res.status(200).send('Informações do cliente atualizadas com sucesso!');
+        if (updated) {
+            res.status(200).json({ message: 'Informações do cliente atualizadas com sucesso!' });
         } else {
-            res.status(404).send('Cliente não encontrado!');
+            res.status(404).json({ message: 'Cliente não encontrado!' });
         }
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
 };
-
 const deleteOneLead = async (req, res) => {
     try {
         const id = req.params.id;

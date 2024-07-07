@@ -57,7 +57,7 @@ const Lead = sequelize.define('lead', {
         type: DataTypes.STRING(45),
         allowNull: false
     },
-    numeroSalasCirurgias: { 
+    numeroSalasCirurgias: {
         type: DataTypes.INTEGER,
         allowNull: false
     },
@@ -86,7 +86,7 @@ const Lead = sequelize.define('lead', {
         allowNull: false
     },
     momentoAtualEmpreendimento: {
-        type: DataTypes.STRING(45),
+        type: DataTypes.STRING(140),
         allowNull: false
     },
     tipoEngenhariaClinica: {
