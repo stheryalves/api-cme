@@ -50,31 +50,40 @@ const createOneAutoclaveBrand = async (req, res) => {
 };
 
 const updateOneAutoclaveBrand = async (req, res) => {
-    const id = req.params.id;
-    const { nomeMarca, tipoEquipamento } = req.body;
-
-    if (!nomeMarca) {
-        return res.status(400).json({ message: 'Marca não fornecida.Por favor digite uma marca!' });
-    }
-
-    const existingBrand = await Brand.findOne({ where: { nomeMarca, tipoEquipamento } });
-
-    if (existingBrand) {
-        return res.status(409).json({ message: 'Marca já cadastrada no banco de dados.' });
-    }
-
     try {
-        const updatedBrand = await Brand.findByPk(id);
+        const id = req.params.id;
+        const brand = await Brand.findByPk(id);
+
+        if (!brand) {
+            return res.status(404).send('Marca não encontrada!');
+        }
+
+        const brandName = req.body;
+        const { nomeMarca } = brandName;
+
+        const existingBrand = await Brand.findOne({ where: { nomeMarca } });
+
+        if (existingBrand && existingBrand.id !== parseInt(id)) {
+            return res.status(409).json({ message: 'Marca já cadastrada no banco de dados.' });
+        }
+
+        if (!nomeMarca) {
+            return res.status(400).json({ message: 'Marca não fornecida.Por favor digite uma marca!' });
+        }
+
+        const [updatedBrand] = await Brand.update(brandName, {
+            where: { id }
+        });
+
         if (updatedBrand) {
-            await updatedBrand.update({ nomeMarca, tipoEquipamento });
-            res.status(200).send('Marca atualizada com sucesso!');
+            res.status(200).json({ message: 'Informações do cliente atualizadas com sucesso!' });
         } else {
-            res.status(404).send('Marca não encontrada!');
+            res.status(404).json({ message: 'Marca não encontrada!' });
         }
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
-}
+};
 
 const deleteOneAutoclaveBrand = async (req, res) => {
     const id = req.params.id;

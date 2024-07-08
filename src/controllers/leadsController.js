@@ -52,13 +52,15 @@ const createOneLead = async (req, res) => {
 
 const updateOneLead = async (req, res) => {
     try {
-        const { id } = req.params;
-        const lead = req.body;
-        const { hospitalEmail } = lead;
+        const id = req.params.id;
+        const lead = await Lead.findByPk(id);
 
-        if (!hospitalEmail) {
-            return res.status(400).json({ message: 'Email do hospital não fornecido.' });
+        if (!lead) {
+            return res.status(404).send('Cliente não encontrado!');
         }
+
+        const leadEmail = req.body;
+        const { hospitalEmail } = leadEmail;
 
         const existingLead = await Lead.findOne({ where: { hospitalEmail } });
 
@@ -66,11 +68,15 @@ const updateOneLead = async (req, res) => {
             return res.status(409).json({ message: 'Email já cadastrado no banco de dados.' });
         }
 
-        const [updated] = await Lead.update(lead, {
+        if (!hospitalEmail) {
+            return res.status(400).json({ message: 'Email do hospital não fornecido.' });
+        }
+
+        const [updatedLead] = await Lead.update(leadEmail, {
             where: { id }
         });
 
-        if (updated) {
+        if (updatedLead) {
             res.status(200).json({ message: 'Informações do cliente atualizadas com sucesso!' });
         } else {
             res.status(404).json({ message: 'Cliente não encontrado!' });
@@ -79,6 +85,7 @@ const updateOneLead = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
 const deleteOneLead = async (req, res) => {
     try {
         const id = req.params.id;

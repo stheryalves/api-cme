@@ -91,13 +91,16 @@ const createOneAutoclaveModel = async (req, res) => {
 };
 
 const updateOneAutoclaveModel = async (req, res) => {
-    const id = req.params.id;
-    const { modeloAutoclave } = req.body;
-
     try {
-        if (!modeloAutoclave) {
-            return res.status(400).json({ message: 'Modelo da autoclave não fornecido.' });
+        const id = req.params.id;
+        const model = await Autoclave.findByPk(id);
+
+        if (!model) {
+            return res.status(404).send('Modelo não encontrado!');
         }
+
+        const modelAutoclave = req.body;
+        const { modeloAutoclave } = modelAutoclave;
 
         const existingModel = await Autoclave.findOne({ where: { modeloAutoclave } });
 
@@ -105,19 +108,24 @@ const updateOneAutoclaveModel = async (req, res) => {
             return res.status(409).json({ message: 'Modelo já cadastrado no banco de dados.' });
         }
 
-        const updated = await Autoclave.update(req.body, {
-            where: { id: id }
+        if (!modeloAutoclave) {
+            return res.status(400).json({ message: 'Modelo da autoclave não fornecido.' });
+        }
+
+        const [updatedModel] = await Autoclave.update(modelAutoclave, {
+            where: { id }
         });
 
-        if (updated[0] === 1) {
-            res.status(200).send('Modelo atualizado com sucesso!');
+        if (updatedModel) {
+            res.status(200).json({ message: 'Modelo atualizado com sucesso!' });
         } else {
-            res.status(404).send('Modelo não encontrado!');
+            res.status(404).json({ message: 'Modelo não encontrado!' });
         }
     } catch (error) {
-        res.status(500).send('Erro ao atualizar o modelo de autoclave.');
+        res.status(500).json({ message: error.message });
     }
-}
+};
+
 
 const deleteOneAutoclaveModel = async (req, res) => {
     let id = req.params.id;

@@ -89,6 +89,10 @@ const Lead = sequelize.define('lead', {
         type: DataTypes.STRING(140),
         allowNull: false
     },
+    possuiEngenhariaClinica: {
+        type: DataTypes.STRING(45),
+        allowNull: false
+    },
     tipoEngenhariaClinica: {
         type: DataTypes.STRING(45),
         allowNull: false
