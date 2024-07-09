@@ -11,6 +11,7 @@ conn();
 const brandRoute = require('./routes/autoclaveBrandRoute')
 const modelRoute = require('./routes/autoclaveModelRoute')
 const leadRoute = require('./routes/leadRoute')
+const washerRoute = require('./routes/washerModelRoute')
 
 app.use(express.urlencoded({ extended: true }));
 app.use(cors())
@@ -23,5 +24,6 @@ app.get('/', (_, res) => {
 app.use('/autoclaveBrand', brandRoute)
 app.use('/autoclaveModel', modelRoute)
 app.use('/lead', leadRoute)
+app.use('/washerModel', washerRoute)
 
 module.exports = app;
