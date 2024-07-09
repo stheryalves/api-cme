@@ -8,8 +8,8 @@ require('dotenv').config();
 const conn = require('./database/conn');
 conn();
 
-const brandRoute = require('./routes/autoclaveBrandRoute')
-const modelRoute = require('./routes/autoclaveModelRoute')
+const brandRoute = require('./routes/brandRoute')
+const autoclaveRoute = require('./routes/autoclaveModelRoute')
 const leadRoute = require('./routes/leadRoute')
 const washerRoute = require('./routes/washerModelRoute')
 
@@ -21,8 +21,8 @@ app.get('/', (_, res) => {
     return res.json({ message: '👋 Welcome to CME API!' })
 })
 
-app.use('/autoclaveBrand', brandRoute)
-app.use('/autoclaveModel', modelRoute)
+app.use('/brand', brandRoute)
+app.use('/autoclaveModel', autoclaveRoute)
 app.use('/lead', leadRoute)
 app.use('/washerModel', washerRoute)
 
