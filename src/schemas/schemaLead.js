@@ -111,7 +111,7 @@ const Lead = sequelize.define('lead', {
     },
     diaSemanaCirurgia: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
         get() {
             const rawValue = this.getDataValue('diaSemanaCirurgia');
             return rawValue ? rawValue.split(',') : [];
