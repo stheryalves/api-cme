@@ -103,4 +103,24 @@ const deleteOneLead = async (req, res) => {
     }
 };
 
-module.exports = { getLeads, getOneLead, createOneLead, updateOneLead, deleteOneLead };
+const checkFormLead = async (req, res) => {
+    const { hospitalEmail } = req.body;
+
+    try {
+        const lead = await Lead.findOne({ where: { hospitalEmail } })
+
+        if (lead) {
+            return res.status(200).json({ exists: true });
+
+        } else {
+            return res.json({ exists: false })
+        }
+    }
+    catch (error) {
+        console.error(error);
+        res.status(500).json({ message: error.message });
+
+    }
+}
+
+module.exports = { getLeads, getOneLead, createOneLead, updateOneLead, deleteOneLead, checkFormLead };
