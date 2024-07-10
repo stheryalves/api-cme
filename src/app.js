@@ -1,24 +1,29 @@
 const express = require('express');
 const app = express();
-const bodyParser = require('body-parser');
+app.use(express.json());
+
 const cors = require('cors')
 
-const brandRoute = require('./routes/autoclaveBrandRoute')
-const modelRoute = require('./routes/autoclaveModelRoute')
-const leadRoute = require('./routes/leadRoute')
+require('dotenv').config();
+const conn = require('./database/conn');
+conn();
 
-app.use(express.json());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+const brandRoute = require('./routes/brandRoute')
+const autoclaveRoute = require('./routes/autoclaveModelRoute')
+const leadRoute = require('./routes/leadRoute')
+const washerRoute = require('./routes/washerModelRoute')
+
+app.use(express.urlencoded({ extended: true }));
 app.use(cors())
 
 
-app.get('/', (req, res) => {
+app.get('/', (_, res) => {
     return res.json({ message: '👋 Welcome to CME API!' })
 })
 
-app.use('/autoclaveBrand', brandRoute)
-app.use('/autoClaveModel', modelRoute)
+app.use('/brand', brandRoute)
+app.use('/autoclaveModel', autoclaveRoute)
 app.use('/lead', leadRoute)
+app.use('/washerModel', washerRoute)
 
 module.exports = app;

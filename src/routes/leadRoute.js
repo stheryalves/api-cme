@@ -1,12 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const leadsController = require('../controllers/leadsController');
+const { getLeads, getOneLead, createOneLead, updateOneLead, deleteOneLead, checkFormLead } = require('../controllers/leadController');
 
-
-router.get('/', leadsController.getLeads);
-router.get('/:id', leadsController.getOneLead);
-router.post('/', leadsController.createOneLead);
-router.put('/:id', leadsController.updateOneLead);
-router.delete('/:id', leadsController.deleteOneLead);
+router.get('/', getLeads);
+router.get('/:id', getOneLead);
+router.post('/', createOneLead);
+router.put('/:id', updateOneLead);
+router.delete('/:id', deleteOneLead);
+router.post('/formcheck', checkFormLead)
 
 module.exports = router;
