@@ -119,9 +119,9 @@ const Washer = sequelize.define('lavadora', {
         allowNull: true,
         defaultValue: 0.0
     },
-    quantidadeTermosProjeto: {
-        type: DataTypes.INTEGER,
-        allowNull: false
+    quantidadeTermosProjeto: { // quem preenche é o dono do negocio - colocar os campo NN como obrigatorios na dashboard
+        type: DataTypes.INTEGER, // preciso desse preenchimento para executar outras contas e popular o banco se 
+        allowNull: false // entrarem marcas novas de autoclaves e lavadoras
     },
     minutosDisponiveisTodosEquipamDia: {
         type: DataTypes.FLOAT,
@@ -134,11 +134,10 @@ const Washer = sequelize.define('lavadora', {
         defaultValue: 0.0
     },
     preco: {
-        type: DataTypes.FLOAT,
+        type: DataTypes.FLOAT, // se for faixa de preço mudar para string
         allowNull: true,
         defaultValue: 0.0
     },
-
 }, {
     tableName: 'lavadora',
     timestamps: true,

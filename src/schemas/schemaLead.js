@@ -57,7 +57,7 @@ const Lead = sequelize.define('lead', {
         type: DataTypes.STRING(45),
         allowNull: false
     },
-    numeroSalasCirurgias: {
+    numeroSalasCirurgias: { //ver com elias essa variavel numeroSalasCirurgicas
         type: DataTypes.INTEGER,
         allowNull: false
     },
@@ -120,10 +120,6 @@ const Lead = sequelize.define('lead', {
             this.setDataValue('diaSemanaCirurgia', value.join(','));
         }
     },
-    /*diaSemanaCirurgia: {
-        type: DataTypes.STRING(45), //array
-        allowNull: false
-    },*/
     intervaloPicoCME: {
         type: DataTypes.STRING(45),
         allowNull: false

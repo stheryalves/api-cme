@@ -84,13 +84,14 @@ const Autoclave = sequelize.define('autoclave', {
         allowNull: true,
         defaultValue: 0.0
     },
-    numAutoclaves: {
-        type: DataTypes.INTEGER,
-        allowNull: false
+    numAutoclaves: { // quem preenche é o dono do negocio - colocar os campo NN como obrigatorios na dashboard
+        type: DataTypes.INTEGER, // preciso desse preenchimento para executar outras contas e popular o banco se 
+        allowNull: true, // entrarem marcas novas de autoclaves e lavadoras
+        defaultValue: 0
     },
-    numAutoclavesUmaEmManutencao: {
-        type: DataTypes.INTEGER,
-        allowNull: true,
+    numAutoclavesUmaEmManutencao: { // quem preenche é o dono do negocio - colocar os campo NN como obrigatorios na dashboard
+        type: DataTypes.INTEGER, // preciso desse preenchimento para executar outras contas e popular o banco se 
+        allowNull: true, // entrarem marcas novas de autoclaves e lavadoras
         defaultValue: 0
     },
     capProcessamIntervaloPicoTodasAutoclavesOnLt: {
@@ -109,7 +110,7 @@ const Autoclave = sequelize.define('autoclave', {
         defaultValue: 0.0
     },
     preco: {
-        type: DataTypes.FLOAT,
+        type: DataTypes.FLOAT, // se for faixa de preço mudar para string
         allowNull: true,
         defaultValue: 0.0
     },
