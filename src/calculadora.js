@@ -122,5 +122,4 @@ async function visualizarResultados() {
     console.error("Erro ao calcular o volume total diário por lead:", err);
   }
 }
-
 visualizarResultados();
