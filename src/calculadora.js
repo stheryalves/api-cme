@@ -30,7 +30,7 @@ async function calculoVolumeTotalDiarioPorLead(id) {
             numeroLeitoRPA,
             numeroLeitoObs,
             numeroLeitoHospitalDia,
-            tipoProcessamento
+            processaTecido
         FROM \`lead\` WHERE id = ?`;
     const [results] = await connection.query(query, [id]);
 
@@ -71,9 +71,9 @@ async function calculoVolumeTotalDiarioPorLead(id) {
       volumeTotalDiarioCirurgias;
     let estimativaVolumeTotalDiarioInstrumentalLt =
       estimativaVolumeTotalDiarioInstrumentalUE * UE;
-    let tipoProcessamento = row.tipoProcessamento;
+    let processaTecido = row.processaTecido;
 
-    if (tipoProcessamento == 0) {
+    if (processaTecido == 0) {
       console.log("0 true = ✅ Ele processa tecidos");
       return {
         id: id,
@@ -83,7 +83,7 @@ async function calculoVolumeTotalDiarioPorLead(id) {
           Math.ceil(estimativaVolumeTotalDiarioInstrumentalUE * 2 * 10) / 10,
         estimativaVolumeTotalDiarioInstrumentalLt:
           Math.ceil(estimativaVolumeTotalDiarioInstrumentalLt * 2 * 10) / 10,
-        tipoProcessamento: true,
+        processaTecido: true,
       };
     } else {
       console.log("1 false = ❌ Ele não processa tecidos");
@@ -95,7 +95,7 @@ async function calculoVolumeTotalDiarioPorLead(id) {
           Math.ceil(estimativaVolumeTotalDiarioInstrumentalUE * 10) / 10,
         estimativaVolumeTotalDiarioInstrumentalLt:
           Math.ceil(estimativaVolumeTotalDiarioInstrumentalLt * 10) / 10,
-        tipoProcessamento: false,
+        processaTecido: false,
       };
     }
   } catch (err) {
@@ -107,6 +107,36 @@ async function calculoVolumeTotalDiarioPorLead(id) {
     }
   }
 }
+
+async function monitorarLeads() {
+  let idsProcessados = new Set(); // guarda os ids ja 'calculados'. new Set() armazena valores unicos de qqr tipo
+
+  setInterval(async () => {
+    try {
+      const ids = await getAllLeadIds();
+
+      for (const id of ids) {
+        if (!idsProcessados.has(id)) { // se o id ainda nao esta guardado na variavel idsProcessados (.has)
+          try {
+            const resultado = await calculoVolumeTotalDiarioPorLead(id); //Executa o calculo
+            if (resultado) {
+              console.log(`Resultado para o id ${id}:`, resultado);
+            } else {
+              console.log(`Nenhum dado encontrado para o id ${id}`);
+            }
+            idsProcessados.add(id); // inclui o novo id na variavel idsProcessados ++
+          } catch (err) {
+            console.error(`Erro ao calcular o volume total diário para o id ${id}:`, err);
+          }
+        }
+      }
+    } catch (err) {
+      console.error('Erro ao obter os IDs dos leads:', err);
+    }
+  }, 3000); // Intervalo de 1 minuto
+}
+
+monitorarLeads();
 
 async function visualizarResultados() {
   try {
@@ -123,3 +153,5 @@ async function visualizarResultados() {
   }
 }
 visualizarResultados();
+
+//todo recomendações

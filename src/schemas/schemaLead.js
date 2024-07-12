@@ -124,7 +124,7 @@ const Lead = sequelize.define('lead', {
         type: DataTypes.STRING(45),
         allowNull: false
     },
-    tipoProcessamento: {
+    processaTecido: {
         type: DataTypes.STRING(45),
         allowNull: false
     },
