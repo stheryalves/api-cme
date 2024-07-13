@@ -1,4 +1,6 @@
 const Autoclave = require('../schemas/schemaAutoclave');
+const AutoclaveBrand = require('../schemas/schemaAutoclaveBrand');
+
 
 const getAutoclaveModels = async (req, res) => {
     try {
@@ -22,6 +24,20 @@ const getOneAutoclaveModel = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 }
+
+const getAutoclaveModelsByBrand = async (req, res) => {
+    try {
+        const brandsWithAutoclaves = await AutoclaveBrand.findAll({
+            include: {
+                model: Autoclave,
+                attributes: ['id', 'modeloAutoclave']
+            }
+        });
+        res.status(200).json(brandsWithAutoclaves);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
 
 const createOneAutoclaveModel = async (req, res) => {
     const {
@@ -143,4 +159,4 @@ const deleteOneAutoclaveModel = async (req, res) => {
     }
 }
 
-module.exports = { getAutoclaveModels, getOneAutoclaveModel, createOneAutoclaveModel, updateOneAutoclaveModel, deleteOneAutoclaveModel };
+module.exports = { getAutoclaveModels, getOneAutoclaveModel, getAutoclaveModelsByBrand, createOneAutoclaveModel, updateOneAutoclaveModel, deleteOneAutoclaveModel };

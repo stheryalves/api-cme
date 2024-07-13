@@ -6,7 +6,7 @@ const Autoclave = sequelize.define('autoclave', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
-        autoIncrement: true
+        autoIncrement: true,
     },
     marcaAutoclave: {
         type: DataTypes.INTEGER,
@@ -119,6 +119,10 @@ const Autoclave = sequelize.define('autoclave', {
     tableName: 'autoclave',
     timestamps: true,
 });
+
+AutoclaveBrand.hasMany(Autoclave, { foreignKey: 'marcaAutoclave' });
+Autoclave.belongsTo(AutoclaveBrand, { foreignKey: 'marcaAutoclave', as: 'brand' });
+
 
 Autoclave.sync();
 
