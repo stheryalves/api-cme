@@ -1,5 +1,5 @@
 require("dotenv").config();
-const conn = require("./database/conn");
+const conn = require("../database/conn");
 
 async function getAllLeadIds() {
   let connection;
@@ -98,6 +98,7 @@ async function calculoVolumeTotalDiarioPorLead(id) {
         processaTecido: false,
       };
     }
+
   } catch (err) {
     console.error("Erro ao executar a consulta:", err);
     throw err;
@@ -108,7 +109,7 @@ async function calculoVolumeTotalDiarioPorLead(id) {
   }
 }
 
-async function monitorarLeads() {
+/*async function monitorarLeads() {
   let idsProcessados = new Set(); // guarda os ids ja 'calculados'. new Set() armazena valores unicos de qqr tipo
 
   setInterval(async () => {
@@ -136,7 +137,7 @@ async function monitorarLeads() {
   }, 3000); // Intervalo de 1 minuto
 }
 
-monitorarLeads();
+monitorarLeads();*/
 
 async function visualizarResultados() {
   try {
@@ -153,5 +154,3 @@ async function visualizarResultados() {
   }
 }
 visualizarResultados();
-
-//todo recomendações

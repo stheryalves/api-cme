@@ -1,6 +1,6 @@
-const Brand = require('../schemas/schemaBrand');
+const Brand = require('../schemas/schemaWasherBrand');
 
-const getAutoclaveBrands = async (req, res) => {
+const getWasherBrands = async (req, res) => {
     try {
         const brands = await Brand.findAll();
         res.status(200).json(brands);
@@ -9,7 +9,7 @@ const getAutoclaveBrands = async (req, res) => {
     }
 }
 
-const getOneAutoclaveBrand = async (req, res) => {
+const getOneWasherBrand = async (req, res) => {
     const id = req.params.id;
     try {
         const brand = await Brand.findByPk(id);
@@ -23,12 +23,12 @@ const getOneAutoclaveBrand = async (req, res) => {
     }
 }
 
-const createOneAutoclaveBrand = async (req, res) => {
+const createOneWasherBrand = async (req, res) => {
     try {
         const brand = req.body;
-        const { nomeMarca, tipoEquipamento } = brand;
+        const { nomeMarca } = brand;
 
-        if (!nomeMarca || !tipoEquipamento) {
+        if (!nomeMarca) {
             return res.status(400).json({ message: 'Marca ou equipamento não fornecidos. Por favor preencha todos os campos!' });
         }
 
@@ -49,7 +49,7 @@ const createOneAutoclaveBrand = async (req, res) => {
     }
 };
 
-const updateOneAutoclaveBrand = async (req, res) => {
+const updateOneWasherBrand = async (req, res) => {
     try {
         const id = req.params.id;
         const brand = await Brand.findByPk(id);
@@ -59,7 +59,7 @@ const updateOneAutoclaveBrand = async (req, res) => {
         }
 
         const brandName = req.body;
-        const { nomeMarca, tipoEquipamento } = brandName;
+        const { nomeMarca } = brandName;
 
         const existingBrand = await Brand.findOne({ where: { nomeMarca } });
 
@@ -67,7 +67,7 @@ const updateOneAutoclaveBrand = async (req, res) => {
             return res.status(409).json({ message: 'Marca já cadastrada no banco de dados.' });
         }
 
-        if (!nomeMarca || !tipoEquipamento) {
+        if (!nomeMarca) {
             return res.status(400).json({ message: 'Marca ou equipamento não fornecidos. Por favor preencha todos os campos!' });
         }
 
@@ -85,7 +85,7 @@ const updateOneAutoclaveBrand = async (req, res) => {
     }
 };
 
-const deleteOneAutoclaveBrand = async (req, res) => {
+const deleteOneWasherBrand = async (req, res) => {
     const id = req.params.id;
     try {
         const deletedBrand = await Brand.findByPk(id);
@@ -101,9 +101,9 @@ const deleteOneAutoclaveBrand = async (req, res) => {
 }
 
 module.exports = {
-    getAutoclaveBrands,
-    getOneAutoclaveBrand,
-    createOneAutoclaveBrand,
-    updateOneAutoclaveBrand,
-    deleteOneAutoclaveBrand
+    getWasherBrands,
+    getOneWasherBrand,
+    createOneWasherBrand,
+    updateOneWasherBrand,
+    deleteOneWasherBrand
 };

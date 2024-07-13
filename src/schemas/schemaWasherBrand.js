@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../database/sequelize');
 
-const Brand = sequelize.define('brand', {
+const WasherBrand = sequelize.define('marcaLavadora', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -12,15 +12,11 @@ const Brand = sequelize.define('brand', {
         allowNull: false,
         unique: true
     },
-    tipoEquipamento: {
-        type: DataTypes.STRING(45),
-        allowNull: false,
-    },
 }, {
-    tableName: 'marca',
+    tableName: 'marcaLavadora',
     timestamps: true
 });
 
-Brand.sync();
+WasherBrand.sync();
 
-module.exports = Brand;
+module.exports = WasherBrand;

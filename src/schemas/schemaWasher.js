@@ -1,6 +1,6 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../database/sequelize');
-const Brand = require('./schemaBrand');
+const WasherBrand = require('./schemaWasherBrand');
 
 const Washer = sequelize.define('lavadora', {
     id: {
@@ -12,7 +12,7 @@ const Washer = sequelize.define('lavadora', {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-            model: Brand,
+            model: WasherBrand,
             key: 'id'
         }
     },

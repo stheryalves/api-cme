@@ -1,6 +1,6 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../database/sequelize');
-const Brand = require('./schemaBrand');
+const AutoclaveBrand = require('./schemaAutoclaveBrand');
 
 const Autoclave = sequelize.define('autoclave', {
     id: {
@@ -12,7 +12,7 @@ const Autoclave = sequelize.define('autoclave', {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-            model: Brand,
+            model: AutoclaveBrand,
             key: 'id'
         }
     },
