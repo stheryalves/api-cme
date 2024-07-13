@@ -73,32 +73,33 @@ async function calculoVolumeTotalDiarioPorLead(id) {
       estimativaVolumeTotalDiarioInstrumentalUE * UE;
     let processaTecido = row.processaTecido;
 
+    console.log('volumeTotalDiarioCirurgias:', volumeTotalDiarioCirurgias)
+    console.log('volumeTotalDiarioUTIs:', volumeTotalDiarioUTIs)
+
+    const arredondar = (valor, fator) => Math.ceil(valor * fator) / fator;
+    volumeTotalDiarioInternacao = arredondar(volumeTotalDiarioInternacao, 10);    
+    console.log('volumeTotalDiarioInternacao:', volumeTotalDiarioInternacao)
+    
+
     if (processaTecido == 0) {
       console.log("0 true = ✅ Ele processa tecidos");
-      return {
-        id: id,
-        volumeTotalDiarioInternacao:
-          Math.ceil(volumeTotalDiarioInternacao * 10) / 10,
-        estimativaVolumeTotalDiarioInstrumentalUE:
-          Math.ceil(estimativaVolumeTotalDiarioInstrumentalUE * 2 * 10) / 10,
-        estimativaVolumeTotalDiarioInstrumentalLt:
-          Math.ceil(estimativaVolumeTotalDiarioInstrumentalLt * 2 * 10) / 10,
-        processaTecido: true,
-      };
-    } else {
-      console.log("1 false = ❌ Ele não processa tecidos");
-      return {
-        id: id,
-        volumeTotalDiarioInternacao:
-          Math.ceil(volumeTotalDiarioInternacao * 10) / 10,
-        estimativaVolumeTotalDiarioInstrumentalUE:
-          Math.ceil(estimativaVolumeTotalDiarioInstrumentalUE * 10) / 10,
-        estimativaVolumeTotalDiarioInstrumentalLt:
-          Math.ceil(estimativaVolumeTotalDiarioInstrumentalLt * 10) / 10,
-        processaTecido: false,
-      };
-    }
+      estimativaVolumeTotalDiarioInstrumentalUE = Math.round(estimativaVolumeTotalDiarioInstrumentalUE * 2 * 10) / 10;
+      estimativaVolumeTotalDiarioInstrumentalLt = Math.round(estimativaVolumeTotalDiarioInstrumentalLt * 2);
 
+      console.log('estimativaVolumeTotalDiarioInstrumentalUE:', estimativaVolumeTotalDiarioInstrumentalUE)
+      console.log('estimativaVolumeTotalDiarioInstrumentalLt:', estimativaVolumeTotalDiarioInstrumentalLt)
+
+      return estimativaVolumeTotalDiarioInstrumentalLt;
+    } else {
+      estimativaVolumeTotalDiarioInstrumentalUE = Math.round(estimativaVolumeTotalDiarioInstrumentalUE * 10) / 10;
+      estimativaVolumeTotalDiarioInstrumentalLt = Math.round(estimativaVolumeTotalDiarioInstrumentalLt);
+
+      console.log('estimativaVolumeTotalDiarioInstrumentalUE:', estimativaVolumeTotalDiarioInstrumentalUE)
+      console.log('estimativaVolumeTotalDiarioInstrumentalLt:', estimativaVolumeTotalDiarioInstrumentalLt)
+
+      console.log("1 false = ❌ Ele não processa tecidos");
+      return estimativaVolumeTotalDiarioInstrumentalLt;
+    }
   } catch (err) {
     console.error("Erro ao executar a consulta:", err);
     throw err;
@@ -148,9 +149,14 @@ async function visualizarResultados() {
       const resultado = await calculoVolumeTotalDiarioPorLead(id);
       resultados.push(resultado);
     }
-    console.log("Resultados:", JSON.stringify(resultados, null, 2));
+    console.log("Resultados:", resultados);
   } catch (err) {
     console.error("Erro ao calcular o volume total diário por lead:", err);
   }
 }
 visualizarResultados();
+
+module.exports = {
+  getAllLeadIds,
+  calculoVolumeTotalDiarioPorLead
+};

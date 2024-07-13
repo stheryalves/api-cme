@@ -5,7 +5,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon src/server.js",
-    "calc": "nodemon src/utils/calculadora.js"
+    "calc": "nodemon src/utils/calculadora.js",
+    "auto": "nodemon src/utils/autoclaveCalc.js"
   },
   "keywords": [],
   "author": "",
