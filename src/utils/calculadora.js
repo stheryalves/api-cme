@@ -77,9 +77,9 @@ async function calculoVolumeTotalDiarioPorLead(id) {
     console.log('volumeTotalDiarioUTIs:', volumeTotalDiarioUTIs)
 
     const arredondar = (valor, fator) => Math.ceil(valor * fator) / fator;
-    volumeTotalDiarioInternacao = arredondar(volumeTotalDiarioInternacao, 10);    
+    volumeTotalDiarioInternacao = arredondar(volumeTotalDiarioInternacao, 10);
     console.log('volumeTotalDiarioInternacao:', volumeTotalDiarioInternacao)
-    
+
 
     if (processaTecido == 0) {
       console.log("0 true = ✅ Ele processa tecidos");
