@@ -132,6 +132,41 @@ const Lead = sequelize.define('lead', {
         type: DataTypes.STRING(45),
         allowNull: false
     },
+    numCirurgiasDia: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        defaultValue: 0
+    },
+    volumeTotalDiarioCirurgias: {
+        type: DataTypes.FLOAT,
+        allowNull: true,
+        defaultValue: 0
+    },
+    volumeTotalDiarioUTIs: {
+        type: DataTypes.FLOAT,
+        allowNull: true,
+        defaultValue: 0
+    },
+    volumeTotalDiarioInternacao: {
+        type: DataTypes.FLOAT,
+        allowNull: true,
+        defaultValue: 0
+    },
+    estimativaVolumeTotalDiárioMaterial: {
+        type: DataTypes.FLOAT,
+        allowNull: true,
+        defaultValue: 0
+    },
+    estimativaVolumeTotalDiarioInstrumentalUE: {
+        type: DataTypes.FLOAT,
+        allowNull: true,
+        defaultValue: 0
+    },
+    estimativaVolumeTotalDiarioInstrumentalLt: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        defaultValue: 0
+    },
 }, {
     tableName: 'lead',
     timestamps: true,

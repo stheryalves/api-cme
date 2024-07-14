@@ -65,12 +65,12 @@ async function calculoVolumeTotalDiarioPorLead(id) {
     let volumeTotalDiarioInternacao =
       (numLeitosTotais - numeroLeitoUTI) * volumePorLeitoInternacaoDiario;
 
-    let estimativaVolumeTotalDiarioInstrumentalUE =
+    let estimativaVolumeTotalDiárioMaterial =
       volumeTotalDiarioInternacao +
       volumeTotalDiarioUTIs +
       volumeTotalDiarioCirurgias;
     let estimativaVolumeTotalDiarioInstrumentalLt =
-      estimativaVolumeTotalDiarioInstrumentalUE * UE;
+      estimativaVolumeTotalDiárioMaterial * UE;
     let processaTecido = row.processaTecido;
 
     console.log('volumeTotalDiarioCirurgias:', volumeTotalDiarioCirurgias)
@@ -80,24 +80,68 @@ async function calculoVolumeTotalDiarioPorLead(id) {
     volumeTotalDiarioInternacao = arredondar(volumeTotalDiarioInternacao, 10);
     console.log('volumeTotalDiarioInternacao:', volumeTotalDiarioInternacao)
 
+    //TODO criar função para update do lead
 
     if (processaTecido == 0) {
       console.log("0 true = ✅ Ele processa tecidos");
-      estimativaVolumeTotalDiarioInstrumentalUE = Math.round(estimativaVolumeTotalDiarioInstrumentalUE * 2 * 10) / 10;
+      estimativaVolumeTotalDiarioInstrumentalUE = Math.round(estimativaVolumeTotalDiárioMaterial * 2 * 10) / 10;
       estimativaVolumeTotalDiarioInstrumentalLt = Math.round(estimativaVolumeTotalDiarioInstrumentalLt * 2);
 
       console.log('estimativaVolumeTotalDiarioInstrumentalUE:', estimativaVolumeTotalDiarioInstrumentalUE)
       console.log('estimativaVolumeTotalDiarioInstrumentalLt:', estimativaVolumeTotalDiarioInstrumentalLt)
 
+      const updateQuery = `UPDATE \`lead\` SET  
+        numCirurgiasDia = ?,
+        volumeTotalDiarioCirurgias = ?, 
+        volumeTotalDiarioUTIs = ?, 
+        volumeTotalDiarioInternacao = ?,
+        estimativaVolumeTotalDiárioMaterial = ?,
+        estimativaVolumeTotalDiarioInstrumentalUE = ?,
+        estimativaVolumeTotalDiarioInstrumentalLt = ?
+        WHERE id = ?`;
+
+      await connection.query(updateQuery, [
+        numCirurgiasDia,
+        volumeTotalDiarioCirurgias,
+        volumeTotalDiarioUTIs,
+        volumeTotalDiarioInternacao,
+        estimativaVolumeTotalDiárioMaterial,
+        estimativaVolumeTotalDiarioInstrumentalUE,        
+        estimativaVolumeTotalDiarioInstrumentalLt,
+        id
+      ]);
+
       return estimativaVolumeTotalDiarioInstrumentalLt;
     } else {
-      estimativaVolumeTotalDiarioInstrumentalUE = Math.round(estimativaVolumeTotalDiarioInstrumentalUE * 10) / 10;
+      estimativaVolumeTotalDiarioInstrumentalUE = Math.round(estimativaVolumeTotalDiárioMaterial * 10) / 10;
       estimativaVolumeTotalDiarioInstrumentalLt = Math.round(estimativaVolumeTotalDiarioInstrumentalLt);
 
       console.log('estimativaVolumeTotalDiarioInstrumentalUE:', estimativaVolumeTotalDiarioInstrumentalUE)
       console.log('estimativaVolumeTotalDiarioInstrumentalLt:', estimativaVolumeTotalDiarioInstrumentalLt)
 
       console.log("1 false = ❌ Ele não processa tecidos");
+
+      const updateQuery = `UPDATE \`lead\` SET 
+        numCirurgiasDia = ?, 
+        volumeTotalDiarioCirurgias = ?, 
+        volumeTotalDiarioUTIs = ?, 
+        volumeTotalDiarioInternacao = ?,
+        estimativaVolumeTotalDiárioMaterial = ?,
+        estimativaVolumeTotalDiarioInstrumentalUE = ?,
+        estimativaVolumeTotalDiarioInstrumentalLt = ?
+        WHERE id = ?`;
+
+      await connection.query(updateQuery, [
+        numCirurgiasDia,
+        volumeTotalDiarioCirurgias,
+        volumeTotalDiarioUTIs,
+        volumeTotalDiarioInternacao,
+        estimativaVolumeTotalDiárioMaterial,
+        estimativaVolumeTotalDiarioInstrumentalUE,
+        estimativaVolumeTotalDiarioInstrumentalLt,
+        id
+      ]);
+
       return estimativaVolumeTotalDiarioInstrumentalLt;
     }
   } catch (err) {
@@ -109,36 +153,6 @@ async function calculoVolumeTotalDiarioPorLead(id) {
     }
   }
 }
-
-/*async function monitorarLeads() {
-  let idsProcessados = new Set(); // guarda os ids ja 'calculados'. new Set() armazena valores unicos de qqr tipo
-
-  setInterval(async () => {
-    try {
-      const ids = await getAllLeadIds();
-
-      for (const id of ids) {
-        if (!idsProcessados.has(id)) { // se o id ainda nao esta guardado na variavel idsProcessados (.has)
-          try {
-            const resultado = await calculoVolumeTotalDiarioPorLead(id); //Executa o calculo
-            if (resultado) {
-              console.log(`Resultado para o id ${id}:`, resultado);
-            } else {
-              console.log(`Nenhum dado encontrado para o id ${id}`);
-            }
-            idsProcessados.add(id); // inclui o novo id na variavel idsProcessados ++
-          } catch (err) {
-            console.error(`Erro ao calcular o volume total diário para o id ${id}:`, err);
-          }
-        }
-      }
-    } catch (err) {
-      console.error('Erro ao obter os IDs dos leads:', err);
-    }
-  }, 3000); // Intervalo de 1 minuto
-}
-
-monitorarLeads();*/
 
 async function visualizarResultados() {
   try {

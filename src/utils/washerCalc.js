@@ -1,6 +1,6 @@
 require("dotenv").config();
 const conn = require("../database/conn");
-const { calculoVolumeTotalDiarioPorLead, getAllLeadIds } = require('./calculadora');
+const { getAllLeadIds } = require('./calculadora');
 
 async function percentUtilization(id) {
   let connection;
@@ -8,7 +8,9 @@ async function percentUtilization(id) {
     connection = await conn();
     //consulta leads
     const queryLead = `SELECT 
-              numeroLeitoUTI
+              numeroLeitoUTI,
+              estimativaVolumeTotalDiárioMaterial,
+              numCirurgiasDia
           FROM \`lead\` WHERE id = ?`;
     const [resultsLead] = await connection.query(queryLead, [id]);
 
@@ -17,6 +19,8 @@ async function percentUtilization(id) {
     }
 
     const numeroLeitoUTI = resultsLead[0].numeroLeitoUTI
+    const estimativaVolumeTotalDiárioMaterial = resultsLead[0].estimativaVolumeTotalDiárioMaterial
+    const numCirurgiasDia = resultsLead[0].numCirurgiasDia
 
     //consulta lavadoras
     const queryWasher = `SELECT 
@@ -48,41 +52,20 @@ async function percentUtilization(id) {
       quantidadeTermosProjeto
     } = resultsWasher[0];
 
-    /*console.log(`tempoCargaDescargaMin: ${tempoCargaDescargaMin}`);
-    console.log(`medTotTempoCicloATMin: ${medTotTempoCicloATMin}`);
-    console.log(`tempoTestDiarioBDMin: ${tempoTestDiarioBDMin}`);
-    console.log(`tempoDiarioAquecimentoMaqMin: ${tempoDiarioAquecimentoMaqMin}`);
-    console.log(`numAutoclaves: ${numAutoclaves}`);
-    console.log(`volumeUtilCamaraLt: ${volumeUtilCamaraLt}`);*/
-
-
     //calculos
     let capacidadeProcessamUeCargaInstrumentos =
       capacidadeCargaBandejasInstrumentos /
       numBandejasPorUe
 
-    let estimativaVolumeTotalDiarioInstrumentalUE = await calculoVolumeTotalDiarioPorLead(id);
-    if (estimativaVolumeTotalDiarioInstrumentalUE === null) {
-      return null;
-    }
 
     let numCiclosInstrumentosDia =
-      estimativaVolumeTotalDiarioInstrumentalUE / //vem da calculadora
-      capacidadeProcessamUeCargaInstrumentos
+      Math.floor(estimativaVolumeTotalDiárioMaterial /
+        capacidadeProcessamUeCargaInstrumentos)
 
     let tempProcessamDemandaInstrumentosMin = numCiclosInstrumentosDia *
       (tempMedCicloInstrumentosCargaMaxMin + intervaloMedEntreCiclos)
 
-    console.log(`numCiclosInstrumentosDia: ${numCiclosInstrumentosDia}`); // certo 26
-    //console.log(`tempMedCicloInstrumentosCargaMaxMin: ${tempMedCicloInstrumentosCargaMaxMin}`);
-    //console.log(`intervaloMedEntreCiclos: ${intervaloMedEntreCiclos}`);
-
-    let numCirurgiasDia = await calculoVolumeTotalDiarioPorLead(id);
-    if (numCirurgiasDia === null) {
-      return null;
-    }
-
-    let qtdTraqueiasDia = numCirurgiasDia * qtdTraqueiasCirurgia // numCirurgiasDia vem da calculadora 216
+    let qtdTraqueiasDia = numCirurgiasDia * qtdTraqueiasCirurgia
     let qtdTraqueiasUtiDia = numeroLeitoUTI * qtdTraqueiasLeitoUtiDia
     let qtdTotTraqueiasDia = qtdTraqueiasDia + qtdTraqueiasUtiDia
     let qtdCiclosAssistVentDia = qtdTotTraqueiasDia / capacidadeCargaTraqueias
@@ -90,30 +73,11 @@ async function percentUtilization(id) {
       (tempMedCicloAssisVentCargaMaxMin +
         intervaloMedEntreCiclos)
 
-    //let demandaCiclosDia = qtdCiclosAssistVentDia + numCiclosInstrumentosDia
-
     let demandaTempoDiaMin = tempProcessamDemandaInstrumentosMin +
       tempProcessamDemandaAssistVentMin
     let minutosDisponiveisTodosEquipamDia = 60 * 24 * quantidadeTermosProjeto
-    let percentualUtilizacaoCapacidadeMax = demandaTempoDiaMin /
-      minutosDisponiveisTodosEquipamDia
-
-    console.log(`demandaTempoDiaMin: ${demandaTempoDiaMin}`);
-    console.log(`tempProcessamDemandaInstrumentosMin: ${tempProcessamDemandaInstrumentosMin}`);
-    console.log(`numCirurgiasDia: ${numCirurgiasDia}`);
-    //console.log(`minutosDisponiveisTodosEquipamDia: ${minutosDisponiveisTodosEquipamDia}`);
-    //console.log(`quantidadeTermosProjeto: ${quantidadeTermosProjeto}`);       
-    //console.log(`tempProcessamDemandaAssistVentMin: ${tempProcessamDemandaAssistVentMin}`); 
-    //console.log(`qtdCiclosAssistVentDia: ${qtdCiclosAssistVentDia}`); 
-    //console.log(`tempMedCicloAssisVentCargaMaxMin: ${tempMedCicloAssisVentCargaMaxMin}`); 
-    //console.log(`intervaloMedEntreCiclos: ${intervaloMedEntreCiclos}`);
-    //console.log(`qtdTotTraqueiasDia: ${qtdTotTraqueiasDia}`);
-    //console.log(`capacidadeCargaTraqueias: ${capacidadeCargaTraqueias}`);
-    //console.log(`qtdTraqueiasDia: ${qtdTraqueiasDia}`); 
-    //console.log(`qtdTraqueiasUtiDia: ${qtdTraqueiasUtiDia}`);
-    //console.log(`qtdTraqueiasLeitoUtiDia: ${qtdTraqueiasLeitoUtiDia}`);
-    //console.log(`numeroLeitoUTI: ${numeroLeitoUTI}`);
-
+    let percentualUtilizacaoCapacidadeMax = Math.round(((demandaTempoDiaMin /
+      minutosDisponiveisTodosEquipamDia) * 100) * 100) / 100
 
     return { percentualUtilizacaoCapacidadeMax }
   } catch (err) {
@@ -135,7 +99,6 @@ async function percentUtilization(id) {
   }
 
 }*/
-
 
 async function visualizarResultados() {
   try {
