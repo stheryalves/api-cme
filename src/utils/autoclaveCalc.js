@@ -17,50 +17,80 @@ async function percentUtilization(id) {
       return null;
     }
 
-    const intervaloPicoCME = resultsLead[0].intervaloPicoCME
-    const estimativaVolumeTotalDiarioInstrumentalLt = resultsLead[0].estimativaVolumeTotalDiarioInstrumentalLt
+    const { intervaloPicoCME, estimativaVolumeTotalDiarioInstrumentalLt } = resultsLead[0];
 
     //consulta autoclaves
-    const queryAutoclave = `SELECT 
-              tempoCargaDescargaMin,
-              medTotTempoCicloATMin,
-              tempoTestDiarioBDMin,
-              tempoDiarioAquecimentoMaqMin,
-              numAutoclaves,
-              volumeUtilCamaraLt
-          FROM \`autoclave\` WHERE id = ?`;
-    const [resultsAutoclave] = await connection.query(queryAutoclave, [id]);
+    const queryAutoclaves = `SELECT * FROM \`autoclave\``;
+    const [resultsAutoclaves] = await connection.query(queryAutoclaves);
 
-    if (resultsAutoclave.length === 0) {
+    if (resultsAutoclaves.length === 0) {
       return null;
     }
 
-    let {
-      tempoCargaDescargaMin,
-      medTotTempoCicloATMin,
-      tempoTestDiarioBDMin,
-      tempoDiarioAquecimentoMaqMin,
-      numAutoclaves,
-      volumeUtilCamaraLt
-    } = resultsAutoclave[0];
+    let resultados = [];
 
-    let intervaloDiarioPicoMin = (intervaloPicoCME * 60) -
-      (tempoTestDiarioBDMin + tempoDiarioAquecimentoMaqMin)
+    for (const autoclave of resultsAutoclaves) {
+      let {
+        id,
+        tempoCargaDescargaMin,
+        medTotTempoCicloATMin,
+        tempoTestDiarioBDMin,
+        tempoDiarioAquecimentoMaqMin,
+        numAutoclaves,
+        volumeUtilCamaraLt
+      } = autoclave;
 
-    let tempoClicloCarDescMin = tempoCargaDescargaMin + medTotTempoCicloATMin
+      //entra na tabela de autoclave
+      let tempoClicloCarDescMin = tempoCargaDescargaMin + medTotTempoCicloATMin // inserir no banco autoclave 60 min
 
-    let numMaxCiclosIntervaloPico = intervaloDiarioPicoMin / tempoClicloCarDescMin
+      //entra na tabela de lead
+      let intervaloDiarioPicoMin = (intervaloPicoCME * 60) -
+        (tempoTestDiarioBDMin + tempoDiarioAquecimentoMaqMin) //// inserir no banco lead 670
 
-    let capProcessamIntervaloPicoTodasAutoclavesOnLt =
-      numAutoclaves *
-      volumeUtilCamaraLt *
-      numMaxCiclosIntervaloPico
+      let numMaxCiclosIntervaloPico = intervaloDiarioPicoMin / tempoClicloCarDescMin // inserir no banco de lead
 
-    let volumeProcessadoIntervaloPicoLt90totDiario = estimativaVolumeTotalDiarioInstrumentalLt * 0.9
-    let capUtilizTodasAutoclavesIntervaloPicoPorcent =
-      Math.round(((volumeProcessadoIntervaloPicoLt90totDiario / capProcessamIntervaloPicoTodasAutoclavesOnLt) * 100) * 100) / 100;
+      let capProcessamIntervaloPicoTodasAutoclavesOnLt =
+        numAutoclaves *
+        volumeUtilCamaraLt *
+        numMaxCiclosIntervaloPico // inserir no banco lead
 
-    return { capUtilizTodasAutoclavesIntervaloPicoPorcent }
+      let volumeProcessadoIntervaloPicoLt90totDiario = estimativaVolumeTotalDiarioInstrumentalLt * 0.9 // inserir no banco de lead
+      let capUtilizTodasAutoclavesIntervaloPicoPorcent = // inserir no banco de lead
+        Math.round(((volumeProcessadoIntervaloPicoLt90totDiario / capProcessamIntervaloPicoTodasAutoclavesOnLt) * 100) * 100) / 100;
+
+      const updateQueryLead = `UPDATE \`lead\` SET 
+      intervaloDiarioPicoMin = ?,
+      numMaxCiclosIntervaloPico = ?,
+      capProcessamIntervaloPicoTodasAutoclavesOnLt = ?, 
+      volumeProcessadoIntervaloPicoLt90totDiario = ?, 
+      capUtilizTodasAutoclavesIntervaloPicoPorcent = ?
+    WHERE id = ?`;
+
+      await connection.query(updateQueryLead, [ //falta incluir uma variavel na tabela 
+        intervaloDiarioPicoMin,
+        numMaxCiclosIntervaloPico,
+        capProcessamIntervaloPicoTodasAutoclavesOnLt,
+        volumeProcessadoIntervaloPicoLt90totDiario,
+        capUtilizTodasAutoclavesIntervaloPicoPorcent,
+        id
+      ]);
+
+      const updateQueryAutoclave = `UPDATE \`autoclave\` SET      
+      tempoClicloCarDescMin = ?
+    WHERE id = ?`;
+
+      await connection.query(updateQueryAutoclave, [ //faltam incluir 3 variaveis na tabela
+        tempoClicloCarDescMin,
+        id
+      ]);
+
+      resultados.push({
+        autoclaveId: autoclave.id,
+        capUtilizTodasAutoclavesIntervaloPicoPorcent //deixar duas casas decimais 
+      });
+    }
+
+    return resultados;
   } catch (err) {
     console.error("Erro ao executar a consulta:", err);
     throw err;
@@ -75,21 +105,7 @@ async function horasTrabalhoAtenderVolTotal(id) {
   let connection;
   try {
     connection = await conn();
-    const queryAutoclave = `SELECT 
-              tempoClicloCarDescMin,
-              tempoTestDiarioBDMin,
-              tempoDiarioAquecimentoMaqMin,
-              numAutoclavesUmaEmManutencao,
-              volumeUtilCamaraLt
-          FROM \`autoclave\` WHERE id = ?`;
-    const [resultsAutoclave] = await connection.query(queryAutoclave, [id]);
-
-    if (resultsAutoclave.length === 0) {
-      return null;
-    }
-
     const queryLead = `SELECT 
-              intervaloPicoCME,
               estimativaVolumeTotalDiarioInstrumentalLt
           FROM \`lead\` WHERE id = ?`;
     const [resultsLead] = await connection.query(queryLead, [id]);
@@ -100,21 +116,47 @@ async function horasTrabalhoAtenderVolTotal(id) {
 
     const estimativaVolumeTotalDiarioInstrumentalLt = resultsLead[0].estimativaVolumeTotalDiarioInstrumentalLt
 
-    let {
-      tempoClicloCarDescMin,
-      tempoTestDiarioBDMin,
-      tempoDiarioAquecimentoMaqMin,
-      numAutoclavesUmaEmManutencao,
-      volumeUtilCamaraLt
-    } = resultsAutoclave[0];
+    const queryAutoclaves = `SELECT * FROM \`autoclave\``;
+    const [resultsAutoclaves] = await connection.query(queryAutoclaves);
 
-    let horasTrabalhoAtenderVolTotalHr = Math.floor((((
-      estimativaVolumeTotalDiarioInstrumentalLt / volumeUtilCamaraLt)
-      * tempoClicloCarDescMin) +
-      tempoTestDiarioBDMin + tempoDiarioAquecimentoMaqMin) / 60)
-      / numAutoclavesUmaEmManutencao
+    if (resultsAutoclaves.length === 0) {
+      return null;
+    }
 
-    return { horasTrabalhoAtenderVolTotalHr }
+    let resultados = [];
+    for (const autoclave of resultsAutoclaves) {
+      let {
+        id,
+        tempoClicloCarDescMin,
+        tempoTestDiarioBDMin,
+        tempoDiarioAquecimentoMaqMin,
+        numAutoclavesUmaEmManutencao,
+        volumeUtilCamaraLt
+      } = autoclave;
+
+      //entra na tabela de lead
+      let horasTrabalhoAtenderVolTotalHr = Math.floor((((
+        estimativaVolumeTotalDiarioInstrumentalLt / volumeUtilCamaraLt)
+        * tempoClicloCarDescMin) +
+        tempoTestDiarioBDMin + tempoDiarioAquecimentoMaqMin) / 60)
+        / numAutoclavesUmaEmManutencao // inserir esse valor no banco de lead
+
+      const updateQueryLead = `UPDATE \`lead\` SET  
+      horasTrabalhoAtenderVolTotalHr = ?
+    WHERE id = ?`;
+
+      await connection.query(updateQueryLead, [
+        horasTrabalhoAtenderVolTotalHr,
+        id
+      ]);
+
+      resultados.push({
+        autoclaveId: autoclave.id,
+        horasTrabalhoAtenderVolTotalHr //arredondar
+      });
+    }
+
+    return resultados;
   } catch (err) {
     console.error("Erro ao executar a consulta:", err);
     throw err;

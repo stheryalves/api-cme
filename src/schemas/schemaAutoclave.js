@@ -50,31 +50,11 @@ const Autoclave = sequelize.define('autoclave', {
         type: DataTypes.INTEGER,
         allowNull: false
     },
-    tempoDisponivelDiarioMin: {
+    tempoDisponivelDiarioMin: { // fazer calculo no back
         type: DataTypes.INTEGER,
-        allowNull: true,
-        defaultValue: 0
-    },
-    producaoHospitalVolDiarioMaterialLt: {
-        type: DataTypes.INTEGER,
-        allowNull: false
-    },
-    volumeProcessadoIntervaloPicoLt90totDiario: {
-        type: DataTypes.INTEGER,
-        allowNull: true,
-        defaultValue: 0
-    },
-    intervaloDiarioPicoMin: {
-        type: DataTypes.INTEGER,
-        allowNull: true,
-        defaultValue: 0
+        allowNull: false,
     },
     numMaxCiclosDia: {
-        type: DataTypes.FLOAT,
-        allowNull: true,
-        defaultValue: 0.0
-    },
-    numMaxCiclosIntervaloPico: {
         type: DataTypes.FLOAT,
         allowNull: true,
         defaultValue: 0.0
@@ -93,21 +73,6 @@ const Autoclave = sequelize.define('autoclave', {
         type: DataTypes.INTEGER, // preciso desse preenchimento para executar outras contas e popular o banco se 
         allowNull: true, // entrarem marcas novas de autoclaves e lavadoras
         defaultValue: 0
-    },
-    capProcessamIntervaloPicoTodasAutoclavesOnLt: {
-        type: DataTypes.INTEGER,
-        allowNull: true,
-        defaultValue: 0
-    },
-    horasTrabalhoAtenderVolTotalHr: {
-        type: DataTypes.INTEGER,
-        allowNull: true,
-        defaultValue: 0
-    },
-    capUtilizTodasAutoclavesIntervaloPicoPorcent: {
-        type: DataTypes.FLOAT,
-        allowNull: true,
-        defaultValue: 0.0
     },
     preco: {
         type: DataTypes.FLOAT, // se for faixa de preço mudar para string

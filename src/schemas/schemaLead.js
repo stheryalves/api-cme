@@ -167,6 +167,41 @@ const Lead = sequelize.define('lead', {
         allowNull: true,
         defaultValue: 0
     },
+    producaoHospitalVolDiarioMaterialLt: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        defaultValue: 0
+    },
+    intervaloDiarioPicoMin: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        defaultValue: 0
+    },
+    numMaxCiclosIntervaloPico: {
+        type: DataTypes.FLOAT,
+        allowNull: true,
+        defaultValue: 0.0
+    },
+    capProcessamIntervaloPicoTodasAutoclavesOnLt: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        defaultValue: 0
+    },
+    volumeProcessadoIntervaloPicoLt90totDiario: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        defaultValue: 0
+    },
+    horasTrabalhoAtenderVolTotalHr: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        defaultValue: 0
+    },
+    capUtilizTodasAutoclavesIntervaloPicoPorcent: {
+        type: DataTypes.FLOAT,
+        allowNull: true,
+        defaultValue: 0.0
+    },
 }, {
     tableName: 'lead',
     timestamps: true,
