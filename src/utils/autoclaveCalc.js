@@ -37,11 +37,21 @@ async function percentUtilization(id) {
         tempoTestDiarioBDMin,
         tempoDiarioAquecimentoMaqMin,
         numAutoclaves,
-        volumeUtilCamaraLt
+        volumeUtilCamaraLt,
+        volumeTotCamaraLt
       } = autoclave;
 
       //entra na tabela de autoclave
       let tempoClicloCarDescMin = tempoCargaDescargaMin + medTotTempoCicloATMin // inserir no banco autoclave 60 min
+      let tempoDisponivelDiarioMin = (24 * 60) - (tempoDiarioAquecimentoMaqMin + tempoTestDiarioBDMin) // 1390
+      let numMaxCiclosDia = tempoDisponivelDiarioMin / tempoClicloCarDescMin // 23.17
+      let aproveitamentoCamaraPorcent = (volumeUtilCamaraLt / volumeTotCamaraLt) * 100 // 79
+      let numAutoclavesUmaEmManutencao = numAutoclaves - 1 // 2
+      //Fazer as contas e enviar para autoclave
+      console.log(`tempoDisponivelDiarioMin: ${tempoDisponivelDiarioMin}`)
+      console.log('numMaxCiclosDia:', numMaxCiclosDia)
+      console.log('aproveitamentoCamaraPorcent:', aproveitamentoCamaraPorcent)
+      console.log('numAutoclavesUmaEmManutencao:', numAutoclavesUmaEmManutencao)
 
       //entra na tabela de lead
       let intervaloDiarioPicoMin = (intervaloPicoCME * 60) -
@@ -59,12 +69,12 @@ async function percentUtilization(id) {
         Math.round(((volumeProcessadoIntervaloPicoLt90totDiario / capProcessamIntervaloPicoTodasAutoclavesOnLt) * 100) * 100) / 100;
 
       const updateQueryLead = `UPDATE \`lead\` SET 
-      intervaloDiarioPicoMin = ?,
-      numMaxCiclosIntervaloPico = ?,
-      capProcessamIntervaloPicoTodasAutoclavesOnLt = ?, 
-      volumeProcessadoIntervaloPicoLt90totDiario = ?, 
-      capUtilizTodasAutoclavesIntervaloPicoPorcent = ?
-    WHERE id = ?`;
+        intervaloDiarioPicoMin = ?,
+        numMaxCiclosIntervaloPico = ?,
+        capProcessamIntervaloPicoTodasAutoclavesOnLt = ?, 
+        volumeProcessadoIntervaloPicoLt90totDiario = ?, 
+        capUtilizTodasAutoclavesIntervaloPicoPorcent = ?
+      WHERE id = ?`;
 
       await connection.query(updateQueryLead, [ //falta incluir uma variavel na tabela 
         intervaloDiarioPicoMin,
@@ -76,11 +86,19 @@ async function percentUtilization(id) {
       ]);
 
       const updateQueryAutoclave = `UPDATE \`autoclave\` SET      
-      tempoClicloCarDescMin = ?
-    WHERE id = ?`;
+        tempoClicloCarDescMin = ?,
+        tempoDisponivelDiarioMin = ?,
+        numMaxCiclosDia = ?,
+        aproveitamentoCamaraPorcent = ?,
+        numAutoclavesUmaEmManutencao = ?
+      WHERE id = ?`;
 
       await connection.query(updateQueryAutoclave, [ //faltam incluir 3 variaveis na tabela
         tempoClicloCarDescMin,
+        tempoDisponivelDiarioMin,
+        numMaxCiclosDia,
+        aproveitamentoCamaraPorcent,
+        numAutoclavesUmaEmManutencao,
         id
       ]);
 

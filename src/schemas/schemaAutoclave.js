@@ -52,7 +52,8 @@ const Autoclave = sequelize.define('autoclave', {
     },
     tempoDisponivelDiarioMin: { // fazer calculo no back
         type: DataTypes.INTEGER,
-        allowNull: false,
+        allowNull: true,
+        defaultValue: 0
     },
     numMaxCiclosDia: {
         type: DataTypes.FLOAT,
@@ -69,9 +70,9 @@ const Autoclave = sequelize.define('autoclave', {
         allowNull: true, // entrarem marcas novas de autoclaves e lavadoras
         defaultValue: 0
     },
-    numAutoclavesUmaEmManutencao: { // quem preenche é o dono do negocio - colocar os campo NN como obrigatorios na dashboard
-        type: DataTypes.INTEGER, // preciso desse preenchimento para executar outras contas e popular o banco se 
-        allowNull: true, // entrarem marcas novas de autoclaves e lavadoras
+    numAutoclavesUmaEmManutencao: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
         defaultValue: 0
     },
     preco: {
