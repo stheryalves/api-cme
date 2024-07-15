@@ -73,62 +73,32 @@ async function calculoVolumeTotalDiarioPorLead(id) {
       estimativaVolumeTotalDiárioMaterial * UE;
     let processaTecido = row.processaTecido;
 
-    console.log('volumeTotalDiarioCirurgias:', volumeTotalDiarioCirurgias)
+    console.log('\nvolumeTotalDiarioCirurgias:', volumeTotalDiarioCirurgias)
     console.log('volumeTotalDiarioUTIs:', volumeTotalDiarioUTIs)
 
     const arredondar = (valor, fator) => Math.ceil(valor * fator) / fator;
     volumeTotalDiarioInternacao = arredondar(volumeTotalDiarioInternacao, 10);
     console.log('volumeTotalDiarioInternacao:', volumeTotalDiarioInternacao)
 
-    //TODO criar função para update do lead
-
-    if (processaTecido == 0) {
-      console.log("0 true = ✅ Ele processa tecidos");
-      estimativaVolumeTotalDiarioInstrumentalUE = Math.round(estimativaVolumeTotalDiárioMaterial * 2 * 10) / 10;
-      estimativaVolumeTotalDiarioInstrumentalLt = Math.round(estimativaVolumeTotalDiarioInstrumentalLt * 2);
-
-      console.log('estimativaVolumeTotalDiarioInstrumentalUE:', estimativaVolumeTotalDiarioInstrumentalUE)
-      console.log('estimativaVolumeTotalDiarioInstrumentalLt:', estimativaVolumeTotalDiarioInstrumentalLt)
-
-      const updateQuery = `UPDATE \`lead\` SET  
-        numCirurgiasDia = ?,
-        volumeTotalDiarioCirurgias = ?, 
-        volumeTotalDiarioUTIs = ?, 
-        volumeTotalDiarioInternacao = ?,
-        estimativaVolumeTotalDiárioMaterial = ?,
-        estimativaVolumeTotalDiarioInstrumentalUE = ?,
-        estimativaVolumeTotalDiarioInstrumentalLt = ?
-        WHERE id = ?`;
-
-      await connection.query(updateQuery, [
-        numCirurgiasDia,
-        volumeTotalDiarioCirurgias,
-        volumeTotalDiarioUTIs,
-        volumeTotalDiarioInternacao,
-        estimativaVolumeTotalDiárioMaterial,
-        estimativaVolumeTotalDiarioInstrumentalUE,        
-        estimativaVolumeTotalDiarioInstrumentalLt,
-        id
-      ]);
-
-      return estimativaVolumeTotalDiarioInstrumentalLt;
-    } else {
-      estimativaVolumeTotalDiarioInstrumentalUE = Math.round(estimativaVolumeTotalDiárioMaterial * 10) / 10;
-      estimativaVolumeTotalDiarioInstrumentalLt = Math.round(estimativaVolumeTotalDiarioInstrumentalLt);
-
-      console.log('estimativaVolumeTotalDiarioInstrumentalUE:', estimativaVolumeTotalDiarioInstrumentalUE)
-      console.log('estimativaVolumeTotalDiarioInstrumentalLt:', estimativaVolumeTotalDiarioInstrumentalLt)
-
-      console.log("1 false = ❌ Ele não processa tecidos");
-
+    //função para update do lead no banco
+    async function updatedQuery(
+      numCirurgiasDia,
+      volumeTotalDiarioCirurgias,
+      volumeTotalDiarioUTIs,
+      volumeTotalDiarioInternacao,
+      estimativaVolumeTotalDiárioMaterial,
+      estimativaVolumeTotalDiarioInstrumentalUE,
+      estimativaVolumeTotalDiarioInstrumentalLt,
+      id
+    ) {
       const updateQuery = `UPDATE \`lead\` SET 
         numCirurgiasDia = ?, 
         volumeTotalDiarioCirurgias = ?, 
         volumeTotalDiarioUTIs = ?, 
-        volumeTotalDiarioInternacao = ?,
-        estimativaVolumeTotalDiárioMaterial = ?,
-        estimativaVolumeTotalDiarioInstrumentalUE = ?,
-        estimativaVolumeTotalDiarioInstrumentalLt = ?
+        volumeTotalDiarioInternacao = ?, 
+        estimativaVolumeTotalDiárioMaterial = ?, 
+        estimativaVolumeTotalDiarioInstrumentalUE = ?, 
+        estimativaVolumeTotalDiarioInstrumentalLt = ? 
         WHERE id = ?`;
 
       await connection.query(updateQuery, [
@@ -141,6 +111,48 @@ async function calculoVolumeTotalDiarioPorLead(id) {
         estimativaVolumeTotalDiarioInstrumentalLt,
         id
       ]);
+    }
+
+    if (processaTecido == 0) {
+      console.log("\n0 true = ✅ Ele processa tecidos");
+      estimativaVolumeTotalDiarioInstrumentalUE = Math.round(estimativaVolumeTotalDiárioMaterial * 2 * 10) / 10;
+      estimativaVolumeTotalDiarioInstrumentalLt = Math.round(estimativaVolumeTotalDiarioInstrumentalLt * 2);
+
+      console.log('id:', id)
+      console.log('estimativaVolumeTotalDiarioInstrumentalUE:', estimativaVolumeTotalDiarioInstrumentalUE)
+      console.log('estimativaVolumeTotalDiarioInstrumentalLt:', estimativaVolumeTotalDiarioInstrumentalLt)
+
+      await updatedQuery(
+        numCirurgiasDia,
+        volumeTotalDiarioCirurgias,
+        volumeTotalDiarioUTIs,
+        volumeTotalDiarioInternacao,
+        estimativaVolumeTotalDiárioMaterial,
+        estimativaVolumeTotalDiarioInstrumentalUE,
+        estimativaVolumeTotalDiarioInstrumentalLt,
+        id
+      );
+
+      return estimativaVolumeTotalDiarioInstrumentalLt;
+    } else {
+      console.log("\n1 false = ❌ Ele não processa tecidos");
+      estimativaVolumeTotalDiarioInstrumentalUE = Math.round(estimativaVolumeTotalDiárioMaterial * 10) / 10;
+      estimativaVolumeTotalDiarioInstrumentalLt = Math.round(estimativaVolumeTotalDiarioInstrumentalLt);
+
+      console.log('id:', id)
+      console.log('estimativaVolumeTotalDiarioInstrumentalUE:', estimativaVolumeTotalDiarioInstrumentalUE)
+      console.log('estimativaVolumeTotalDiarioInstrumentalLt:', estimativaVolumeTotalDiarioInstrumentalLt)
+
+      await updatedQuery(
+        numCirurgiasDia,
+        volumeTotalDiarioCirurgias,
+        volumeTotalDiarioUTIs,
+        volumeTotalDiarioInternacao,
+        estimativaVolumeTotalDiárioMaterial,
+        estimativaVolumeTotalDiarioInstrumentalUE,
+        estimativaVolumeTotalDiarioInstrumentalLt,
+        id
+      );
 
       return estimativaVolumeTotalDiarioInstrumentalLt;
     }
