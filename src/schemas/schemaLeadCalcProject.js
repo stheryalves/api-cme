@@ -53,6 +53,16 @@ const LeadCalcProject = sequelize.define(
         key: "id",
       },
     },
+    createdAt: {
+      type: DataTypes.DATE,
+      allowNull: true,
+      defaultValue: DataTypes.NOW,
+    },
+    updatedAt: {
+      type: DataTypes.DATE,
+      allowNull: true,
+      defaultValue: DataTypes.NOW,
+    },
   },
   {
     tableName: "calculos_projeto",

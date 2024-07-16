@@ -82,7 +82,7 @@ async function calculoVolumeTotalDiarioPorLead(id) {
     volumeTotalDiarioInternacao = arredondar(volumeTotalDiarioInternacao, 10);
     console.log('volumeTotalDiarioInternacao:', volumeTotalDiarioInternacao)
 
-    async function updatedQuery(
+    /*async function updatedQuery(
       numCirurgiasDia,
       volumeTotalDiarioCirurgias,
       volumeTotalDiarioUTIs,
@@ -102,7 +102,7 @@ async function calculoVolumeTotalDiarioPorLead(id) {
       console.log(`estimativaVolumeTotalDiarioInstrumentalLt: ${estimativaVolumeTotalDiarioInstrumentalLt}`);
       console.log(`id: ${id}`);
 
-      const updateQuery = `UPDATE \`calculos_projeto\` SET 
+      const updateQuery = `INSERT \`calculos_projeto\` SET 
         numCirurgiasDia = ?, 
         volumeTotalDiarioCirurgias = ?, 
         volumeTotalDiarioUTIs = ?, 
@@ -127,6 +127,54 @@ async function calculoVolumeTotalDiarioPorLead(id) {
       console.error(`Erro ao atualizar dados para o id ${id}:`, err);
       throw err;
     }
+    }*/
+
+    async function insertQuery(
+      numCirurgiasDia,
+      volumeTotalDiarioCirurgias,
+      volumeTotalDiarioUTIs,
+      volumeTotalDiarioInternacao,
+      estimativaVolumeTotalDiárioMaterial,
+      estimativaVolumeTotalDiarioInstrumentalUE,
+      estimativaVolumeTotalDiarioInstrumentalLt,
+      lead
+    ) {
+      try {
+        /*console.log(`numCirurgiasDia: ${numCirurgiasDia}`);
+        console.log(`volumeTotalDiarioCirurgias: ${volumeTotalDiarioCirurgias}`);
+        console.log(`volumeTotalDiarioUTIs: ${volumeTotalDiarioUTIs}`);
+        console.log(`volumeTotalDiarioInternacao: ${volumeTotalDiarioInternacao}`);
+        console.log(`estimativaVolumeTotalDiárioMaterial: ${estimativaVolumeTotalDiárioMaterial}`);
+        console.log(`estimativaVolumeTotalDiarioInstrumentalUE: ${estimativaVolumeTotalDiarioInstrumentalUE}`);
+        console.log(`estimativaVolumeTotalDiarioInstrumentalLt: ${estimativaVolumeTotalDiarioInstrumentalLt}`);*/
+    
+        const insertQuery = `INSERT INTO \`calculos_projeto\` (
+          numCirurgiasDia, 
+          volumeTotalDiarioCirurgias, 
+          volumeTotalDiarioUTIs, 
+          volumeTotalDiarioInternacao, 
+          estimativaVolumeTotalDiárioMaterial, 
+          estimativaVolumeTotalDiarioInstrumentalUE, 
+          estimativaVolumeTotalDiarioInstrumentalLt,
+          \`lead\`
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
+    
+        await connection.query(insertQuery, [
+          numCirurgiasDia,
+          volumeTotalDiarioCirurgias,
+          volumeTotalDiarioUTIs,
+          volumeTotalDiarioInternacao,
+          estimativaVolumeTotalDiárioMaterial,
+          estimativaVolumeTotalDiarioInstrumentalUE,
+          estimativaVolumeTotalDiarioInstrumentalLt,
+          lead
+        ]);
+        
+        //console.log('Dados inseridos com sucesso.');
+      } catch (err) {
+        console.error('Erro ao inserir dados:', err);
+        throw err;
+      }
     }
 
     if (processaTecido == 0) {
@@ -138,7 +186,7 @@ async function calculoVolumeTotalDiarioPorLead(id) {
       console.log('estimativaVolumeTotalDiarioInstrumentalUE:', estimativaVolumeTotalDiarioInstrumentalUE)
       console.log('estimativaVolumeTotalDiarioInstrumentalLt:', estimativaVolumeTotalDiarioInstrumentalLt)
 
-      await updatedQuery(
+      await insertQuery(
         numCirurgiasDia,
         volumeTotalDiarioCirurgias,
         volumeTotalDiarioUTIs,
@@ -159,7 +207,7 @@ async function calculoVolumeTotalDiarioPorLead(id) {
       console.log('estimativaVolumeTotalDiarioInstrumentalUE:', estimativaVolumeTotalDiarioInstrumentalUE)
       console.log('estimativaVolumeTotalDiarioInstrumentalLt:', estimativaVolumeTotalDiarioInstrumentalLt)
 
-      await updatedQuery(
+      await insertQuery(
         numCirurgiasDia,
         volumeTotalDiarioCirurgias,
         volumeTotalDiarioUTIs,

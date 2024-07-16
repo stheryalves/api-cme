@@ -73,39 +73,53 @@ async function percentUtilizationAutoclave(id) {
       let capUtilizTodasAutoclavesIntervaloPicoPorcent =
         Math.round(((volumeProcessadoIntervaloPicoLt90totDiario / capProcessamIntervaloPicoTodasAutoclavesOnLt) * 100) * 100) / 100;
 
-      const updateQueryLead = `UPDATE \`calculos_autoclave\` SET 
-        intervaloDiarioPicoMin = ?,
-        numMaxCiclosIntervaloPico = ?,
-        capProcessamIntervaloPicoTodasAutoclavesOnLt = ?, 
-        volumeProcessadoIntervaloPicoLt90totDiario = ?, 
-        capUtilizTodasAutoclavesIntervaloPicoPorcent = ?
-      WHERE id = ?`;
-
-      await connection.query(updateQueryLead, [
+      const insertQueryCalc = `INSERT INTO \`calculos_autoclave\` (
         intervaloDiarioPicoMin,
         numMaxCiclosIntervaloPico,
-        capProcessamIntervaloPicoTodasAutoclavesOnLt,
-        volumeProcessadoIntervaloPicoLt90totDiario,
+        capProcessamIntervaloPicoTodasAutoclavesOnLt, 
+        volumeProcessadoIntervaloPicoLt90totDiario, 
         capUtilizTodasAutoclavesIntervaloPicoPorcent,
-        id
-      ]);
+        \`lead\`
+      ) VALUES (?, ?, ?, ?, ?, ?)`;
 
-      const updateQueryAutoclave = `UPDATE \`autoclave\` SET      
-        tempoClicloCarDescMin = ?,
-        tempoDisponivelDiarioMin = ?,
-        numMaxCiclosDia = ?,
-        aproveitamentoCamaraPorcent = ?,
-        numAutoclavesUmaEmManutencao = ?
-      WHERE id = ?`;
+      try {
+        await connection.query(insertQueryCalc, [
+          intervaloDiarioPicoMin,
+          numMaxCiclosIntervaloPico,
+          capProcessamIntervaloPicoTodasAutoclavesOnLt,
+          volumeProcessadoIntervaloPicoLt90totDiario,
+          capUtilizTodasAutoclavesIntervaloPicoPorcent,
+          id
+        ]);
+        console.log('Dados inseridos com sucesso.');
+      } catch (err) {
+        console.error('Erro ao inserir dados:', err);
+        throw err;
+      }
 
-      await connection.query(updateQueryAutoclave, [
+      const insertQueryAutoclave = `INSERT INTO \`autoclave\` (
+        id,      
         tempoClicloCarDescMin,
         tempoDisponivelDiarioMin,
         numMaxCiclosDia,
         aproveitamentoCamaraPorcent,
-        numAutoclavesUmaEmManutencao,
-        id
+        numAutoclavesUmaEmManutencao
+      ) VALUES (? , ? , ? , ? , ?, ?)`;
+    
+      try{
+      await connection.query(insertQueryAutoclave, [
+        id,
+        tempoClicloCarDescMin,
+        tempoDisponivelDiarioMin,
+        numMaxCiclosDia,
+        aproveitamentoCamaraPorcent,
+        numAutoclavesUmaEmManutencao
       ]);
+      console.log('Dados inseridos com sucesso.');
+      } catch (err) {
+        console.error('Erro ao inserir dados:', err);
+        throw err;
+      }
 
       resultados.push({
         autoclaveId: autoclave.id,
@@ -164,9 +178,9 @@ async function horasTrabalhoAtenderVolTotal(id) {
         tempoTestDiarioBDMin + tempoDiarioAquecimentoMaqMin) / 60)
         / numAutoclavesUmaEmManutencao
 
-      const updateQueryLead = `UPDATE \`calculos_autoclave\` SET  
-      horasTrabalhoAtenderVolTotalHr = ?
-    WHERE id = ?`;
+      const updateQueryLead = `INSERT INTO \`calculos_autoclave\` (  
+                horasTrabalhoAtenderVolTotalHr
+            )VALUES ( ? )`;
 
       await connection.query(updateQueryLead, [
         horasTrabalhoAtenderVolTotalHr,
