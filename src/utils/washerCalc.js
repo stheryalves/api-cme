@@ -71,7 +71,7 @@ async function percentUtilizationWasher(id) {
       let percentualUtilizacaoCapacidadeMax = Math.round(((demandaTempoDiaMin /
         minutosDisponiveisTodosEquipamDia) * 100) * 100) / 100
 
-      const updateQueryLead = `UPDATE \`lead\` SET 
+      const updateQueryLead = `UPDATE \`calculos_lavadora\` SET 
         numCiclosInstrumentosDia = ?,
         tempProcessamDemandaInstrumentosMin = ?, 
         qtdTraqueiasDia = ?, 
@@ -167,9 +167,6 @@ async function washersRecommendationByLead() {
     const modelos = await getAllModelsWashers();
     const resultados = [];
 
-    //console.log("Marcas:", marcas);
-    //console.log("Modelos:", modelos);
-
     for (const id of ids) { //calcula por lead percentResults
       const percentResults = await percentUtilizationWasher(id);
 
@@ -184,8 +181,6 @@ async function washersRecommendationByLead() {
           const percentResults = await percentUtilizationWasher(id);
           console.log(`Percent Results para Lavadoras para Lead ID ${id}:`, percentResults);
 
-
-          //console.log(`Lead ID: ${id}, Washer ID: ${washerId}, Marca: ${marcaLavadora}, Modelo: ${modeloLavadora}`);
           resultados.push({
             leadId: id,
             marcaId: marcaLavadora,

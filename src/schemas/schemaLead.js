@@ -57,7 +57,7 @@ const Lead = sequelize.define('lead', {
         type: DataTypes.STRING(45),
         allowNull: false
     },
-    numeroSalasCirurgias: { //ver com elias essa variavel numeroSalasCirurgicas
+    numeroSalasCirurgicas: {
         type: DataTypes.INTEGER,
         allowNull: false
     },
@@ -131,131 +131,6 @@ const Lead = sequelize.define('lead', {
     aceitarTermos: {
         type: DataTypes.STRING(45),
         allowNull: false
-    },
-    numCirurgiasDia: {
-        type: DataTypes.INTEGER,
-        allowNull: true,
-        defaultValue: 0
-    },
-    volumeTotalDiarioCirurgias: {
-        type: DataTypes.FLOAT,
-        allowNull: true,
-        defaultValue: 0
-    },
-    volumeTotalDiarioUTIs: {
-        type: DataTypes.FLOAT,
-        allowNull: true,
-        defaultValue: 0
-    },
-    volumeTotalDiarioInternacao: {
-        type: DataTypes.FLOAT,
-        allowNull: true,
-        defaultValue: 0
-    },
-    estimativaVolumeTotalDiárioMaterial: {
-        type: DataTypes.FLOAT,
-        allowNull: true,
-        defaultValue: 0
-    },
-    estimativaVolumeTotalDiarioInstrumentalUE: {
-        type: DataTypes.FLOAT,
-        allowNull: true,
-        defaultValue: 0
-    },
-    estimativaVolumeTotalDiarioInstrumentalLt: {
-        type: DataTypes.INTEGER,
-        allowNull: true,
-        defaultValue: 0
-    },
-    producaoHospitalVolDiarioMaterialLt: {
-        type: DataTypes.INTEGER,
-        allowNull: true,
-        defaultValue: 0
-    },
-    intervaloDiarioPicoMin: {
-        type: DataTypes.INTEGER,
-        allowNull: true,
-        defaultValue: 0
-    },
-    numMaxCiclosIntervaloPico: {
-        type: DataTypes.FLOAT,
-        allowNull: true,
-        defaultValue: 0.0
-    },
-    capProcessamIntervaloPicoTodasAutoclavesOnLt: {
-        type: DataTypes.INTEGER,
-        allowNull: true,
-        defaultValue: 0
-    },
-    volumeProcessadoIntervaloPicoLt90totDiario: {
-        type: DataTypes.INTEGER,
-        allowNull: true,
-        defaultValue: 0
-    },
-    horasTrabalhoAtenderVolTotalHr: {
-        type: DataTypes.INTEGER,
-        allowNull: true,
-        defaultValue: 0
-    },
-    capUtilizTodasAutoclavesIntervaloPicoPorcent: {
-        type: DataTypes.FLOAT,
-        allowNull: true,
-        defaultValue: 0.0
-    },
-    numCiclosInstrumentosDia: { // começa aqui
-        type: DataTypes.INTEGER,
-        allowNull: true,
-        defaultValue: 0
-    },
-    tempProcessamDemandaInstrumentosMin: {
-        type: DataTypes.FLOAT,
-        allowNull: true,
-        defaultValue: 0.0
-    },
-    qtdTraqueiasDia: {
-        type: DataTypes.INTEGER,
-        allowNull: true,
-        defaultValue: 0
-    },
-    qtdTraqueiasUtiDia: {
-        type: DataTypes.INTEGER,
-        allowNull: true,
-        defaultValue: 0
-    },
-    qtdTotTraqueiasDia: {
-        type: DataTypes.INTEGER,
-        allowNull: true,
-        defaultValue: 0
-    },
-    qtdCiclosAssistVentDia: {
-        type: DataTypes.INTEGER,
-        allowNull: true,
-        defaultValue: 0
-    },
-    demandaCiclosDia: {
-        type: DataTypes.INTEGER,
-        allowNull: true,
-        defaultValue: 0
-    },    
-    tempProcessamDemandaAssistVentMin: {
-        type: DataTypes.FLOAT,
-        allowNull: true,
-        defaultValue: 0.0
-    },
-    demandaTempoDiaMin: {
-        type: DataTypes.FLOAT,
-        allowNull: true,
-        defaultValue: 0.0
-    },
-    minutosDisponiveisTodosEquipamDia: {
-        type: DataTypes.FLOAT,
-        allowNull: true,
-        defaultValue: 0.0
-    },
-    percentualUtilizacaoCapacidadeMax: {
-        type: DataTypes.FLOAT,
-        allowNull: true,
-        defaultValue: 0.0
     },
 }, {
     tableName: 'lead',

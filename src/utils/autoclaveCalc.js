@@ -63,7 +63,7 @@ async function percentUtilizationAutoclave(id) {
       let capUtilizTodasAutoclavesIntervaloPicoPorcent =
         Math.round(((volumeProcessadoIntervaloPicoLt90totDiario / capProcessamIntervaloPicoTodasAutoclavesOnLt) * 100) * 100) / 100;
 
-      const updateQueryLead = `UPDATE \`lead\` SET 
+      const updateQueryLead = `UPDATE \`calculos_autoclave\` SET 
         intervaloDiarioPicoMin = ?,
         numMaxCiclosIntervaloPico = ?,
         capProcessamIntervaloPicoTodasAutoclavesOnLt = ?, 
@@ -154,7 +154,7 @@ async function horasTrabalhoAtenderVolTotal(id) {
         tempoTestDiarioBDMin + tempoDiarioAquecimentoMaqMin) / 60)
         / numAutoclavesUmaEmManutencao
 
-      const updateQueryLead = `UPDATE \`lead\` SET  
+      const updateQueryLead = `UPDATE \`calculos_autoclave\` SET  
       horasTrabalhoAtenderVolTotalHr = ?
     WHERE id = ?`;
 

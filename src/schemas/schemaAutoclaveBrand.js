@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../database/sequelize');
 
-const AutoclaveBrand = sequelize.define('marcaAutoclave', {
+const AutoclaveBrand = sequelize.define('marca_autoclave', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -13,7 +13,7 @@ const AutoclaveBrand = sequelize.define('marcaAutoclave', {
         unique: true
     },
 }, {
-    tableName: 'marcaAutoclave',
+    tableName: 'marca_autoclave',
     timestamps: true
 });
 
