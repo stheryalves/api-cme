@@ -8,8 +8,7 @@ async function percentUtilizationAutoclave(id) {
     connection = await conn();
     //consulta leads
     const queryLead = `SELECT 
-              intervaloPicoCME,
-              estimativaVolumeTotalDiarioInstrumentalLt
+              intervaloPicoCME
           FROM \`lead\` WHERE id = ?`;
     const [resultsLead] = await connection.query(queryLead, [id]);
 
@@ -17,7 +16,18 @@ async function percentUtilizationAutoclave(id) {
       return null;
     }
 
-    const { intervaloPicoCME, estimativaVolumeTotalDiarioInstrumentalLt } = resultsLead[0];
+    const { intervaloPicoCME } = resultsLead[0];
+    
+    const queryCalc = `SELECT 
+              estimativaVolumeTotalDiarioInstrumentalLt
+          FROM \`calculos_projeto\` WHERE id = ?`;
+    const [resultsCalc] = await connection.query(queryCalc, [id]);
+
+    if (resultsCalc.length === 0) {
+      return null;
+    }
+
+    const { estimativaVolumeTotalDiarioInstrumentalLt } = resultsCalc[0];
 
     //consulta autoclaves
     const queryAutoclaves = `SELECT * FROM \`autoclave\``;
@@ -118,16 +128,16 @@ async function horasTrabalhoAtenderVolTotal(id) {
   let connection;
   try {
     connection = await conn();
-    const queryLead = `SELECT 
+    const queryCalc = `SELECT 
               estimativaVolumeTotalDiarioInstrumentalLt
-          FROM \`lead\` WHERE id = ?`;
-    const [resultsLead] = await connection.query(queryLead, [id]);
+          FROM \`calculos_projeto\` WHERE id = ?`;
+    const [resultsCalc] = await connection.query(queryCalc, [id]);
 
-    if (resultsLead.length === 0) {
+    if (resultsCalc.length === 0) {
       return null;
     }
 
-    const estimativaVolumeTotalDiarioInstrumentalLt = resultsLead[0].estimativaVolumeTotalDiarioInstrumentalLt
+    const estimativaVolumeTotalDiarioInstrumentalLt = resultsCalc[0].estimativaVolumeTotalDiarioInstrumentalLt
 
     const queryAutoclaves = `SELECT * FROM \`autoclave\``;
     const [resultsAutoclaves] = await connection.query(queryAutoclaves);
@@ -265,7 +275,7 @@ async function visualizarResultados() {
     for (const id of ids) {
       //const resultadoPercent = await percentUtilizationAutoclave(id);
       //const resultadoHr = await horasTrabalhoAtenderVolTotal(id);
-      const resultadoRecomendacoesAuto = await autoclaveRecomendationByLead(id);
+      const resultadoRecomendacoesAuto = await autoclaveRecommendationByLead(id);
       //resultados.push(resultadoPercent, resultadoHr, resultadoRecomendacoesAuto);
       resultados.push(resultadoRecomendacoesAuto);
     }

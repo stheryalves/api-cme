@@ -71,7 +71,7 @@ async function percentUtilizationWasher(id) {
       let percentualUtilizacaoCapacidadeMax = Math.round(((demandaTempoDiaMin /
         minutosDisponiveisTodosEquipamDia) * 100) * 100) / 100
 
-      const updateQueryLead = `UPDATE \`calculos_lavadora\` SET 
+      const updateQueryCalc = `UPDATE \`calculos_lavadora\` SET 
         numCiclosInstrumentosDia = ?,
         tempProcessamDemandaInstrumentosMin = ?, 
         qtdTraqueiasDia = ?, 
@@ -85,7 +85,7 @@ async function percentUtilizationWasher(id) {
         percentualUtilizacaoCapacidadeMax = ?
       WHERE id = ?`;
 
-      await connection.query(updateQueryLead, [
+      await connection.query(updateQueryCalc, [
         numCiclosInstrumentosDia,
         tempProcessamDemandaInstrumentosMin,
         qtdTraqueiasDia,

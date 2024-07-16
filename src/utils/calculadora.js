@@ -82,7 +82,6 @@ async function calculoVolumeTotalDiarioPorLead(id) {
     volumeTotalDiarioInternacao = arredondar(volumeTotalDiarioInternacao, 10);
     console.log('volumeTotalDiarioInternacao:', volumeTotalDiarioInternacao)
 
-    //função para update do lead no banco
     async function updatedQuery(
       numCirurgiasDia,
       volumeTotalDiarioCirurgias,
@@ -93,6 +92,16 @@ async function calculoVolumeTotalDiarioPorLead(id) {
       estimativaVolumeTotalDiarioInstrumentalLt,
       id
     ) {
+      try{
+      console.log(`numCirurgiasDia: ${numCirurgiasDia}`);
+      console.log(`volumeTotalDiarioCirurgias: ${volumeTotalDiarioCirurgias}`);
+      console.log(`volumeTotalDiarioUTIs: ${volumeTotalDiarioUTIs}`);
+      console.log(`volumeTotalDiarioInternacao: ${volumeTotalDiarioInternacao}`);
+      console.log(`estimativaVolumeTotalDiárioMaterial: ${estimativaVolumeTotalDiárioMaterial}`);
+      console.log(`estimativaVolumeTotalDiarioInstrumentalUE: ${estimativaVolumeTotalDiarioInstrumentalUE}`);
+      console.log(`estimativaVolumeTotalDiarioInstrumentalLt: ${estimativaVolumeTotalDiarioInstrumentalLt}`);
+      console.log(`id: ${id}`);
+
       const updateQuery = `UPDATE \`calculos_projeto\` SET 
         numCirurgiasDia = ?, 
         volumeTotalDiarioCirurgias = ?, 
@@ -113,6 +122,11 @@ async function calculoVolumeTotalDiarioPorLead(id) {
         estimativaVolumeTotalDiarioInstrumentalLt,
         id
       ]);
+      console.log(`Dados atualizados com sucesso para o id: ${id}`);
+    } catch (err) {
+      console.error(`Erro ao atualizar dados para o id ${id}:`, err);
+      throw err;
+    }
     }
 
     if (processaTecido == 0) {
