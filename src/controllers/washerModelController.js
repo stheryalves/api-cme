@@ -1,3 +1,4 @@
+
 const Washer = require('../schemas/schemaWasher');
 
 const getWasherModels = async (req, res) => {
@@ -33,9 +34,11 @@ const createOneWasherModel = async (req, res) => {
         tempMedCicloInstrumentosCargaMaxMin,
         tempMedCicloAssisVentCargaMaxMin,
         producaoUeInstrumentosDia,
+        numCirurgiasDia,
         numLeitosUti,
         numBandejasPorUe,
         capacidadeProcessamUeCargaInstrumentos,
+        numCiclosInstrumentosDia,
         intervaloMedEntreCiclos,
         tempProcessamDemandaInstrumentosMin,
         qtdTraqueiasCirurgia,
@@ -73,6 +76,7 @@ const createOneWasherModel = async (req, res) => {
             tempMedCicloInstrumentosCargaMaxMin,
             tempMedCicloAssisVentCargaMaxMin,
             producaoUeInstrumentosDia,
+            numCirurgiasDia,
             numLeitosUti,
             numBandejasPorUe,
             capacidadeProcessamUeCargaInstrumentos,

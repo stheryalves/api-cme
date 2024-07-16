@@ -1,3 +1,4 @@
+
 const express = require('express');
 const router = express.Router();
 const { getAutoclaveModels, getOneAutoclaveModel, getAutoclaveModelsByBrand, createOneAutoclaveModel, updateOneAutoclaveModel, deleteOneAutoclaveModel } = require('../controllers/autoclaveModelController');
