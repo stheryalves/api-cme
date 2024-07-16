@@ -2,7 +2,7 @@ require("dotenv").config();
 const conn = require("../database/conn");
 const { getAllLeadIds } = require('./calculadora');
 
-async function percentUtilization(id) {
+async function percentUtilizationAutoclave(id) {
   let connection;
   try {
     connection = await conn();
@@ -42,30 +42,25 @@ async function percentUtilization(id) {
       } = autoclave;
 
       //entra na tabela de autoclave
-      let tempoClicloCarDescMin = tempoCargaDescargaMin + medTotTempoCicloATMin // inserir no banco autoclave 60 min
+      let tempoClicloCarDescMin = tempoCargaDescargaMin + medTotTempoCicloATMin // 60 min
       let tempoDisponivelDiarioMin = (24 * 60) - (tempoDiarioAquecimentoMaqMin + tempoTestDiarioBDMin) // 1390
       let numMaxCiclosDia = tempoDisponivelDiarioMin / tempoClicloCarDescMin // 23.17
       let aproveitamentoCamaraPorcent = (volumeUtilCamaraLt / volumeTotCamaraLt) * 100 // 79
       let numAutoclavesUmaEmManutencao = numAutoclaves - 1 // 2
-      //Fazer as contas e enviar para autoclave
-      console.log(`tempoDisponivelDiarioMin: ${tempoDisponivelDiarioMin}`)
-      console.log('numMaxCiclosDia:', numMaxCiclosDia)
-      console.log('aproveitamentoCamaraPorcent:', aproveitamentoCamaraPorcent)
-      console.log('numAutoclavesUmaEmManutencao:', numAutoclavesUmaEmManutencao)
 
       //entra na tabela de lead
       let intervaloDiarioPicoMin = (intervaloPicoCME * 60) -
-        (tempoTestDiarioBDMin + tempoDiarioAquecimentoMaqMin) //// inserir no banco lead 670
+        (tempoTestDiarioBDMin + tempoDiarioAquecimentoMaqMin) // 670
 
-      let numMaxCiclosIntervaloPico = intervaloDiarioPicoMin / tempoClicloCarDescMin // inserir no banco de lead
+      let numMaxCiclosIntervaloPico = intervaloDiarioPicoMin / tempoClicloCarDescMin
 
       let capProcessamIntervaloPicoTodasAutoclavesOnLt =
         numAutoclaves *
         volumeUtilCamaraLt *
-        numMaxCiclosIntervaloPico // inserir no banco lead
+        numMaxCiclosIntervaloPico
 
-      let volumeProcessadoIntervaloPicoLt90totDiario = estimativaVolumeTotalDiarioInstrumentalLt * 0.9 // inserir no banco de lead
-      let capUtilizTodasAutoclavesIntervaloPicoPorcent = // inserir no banco de lead
+      let volumeProcessadoIntervaloPicoLt90totDiario = estimativaVolumeTotalDiarioInstrumentalLt * 0.9
+      let capUtilizTodasAutoclavesIntervaloPicoPorcent =
         Math.round(((volumeProcessadoIntervaloPicoLt90totDiario / capProcessamIntervaloPicoTodasAutoclavesOnLt) * 100) * 100) / 100;
 
       const updateQueryLead = `UPDATE \`lead\` SET 
@@ -76,7 +71,7 @@ async function percentUtilization(id) {
         capUtilizTodasAutoclavesIntervaloPicoPorcent = ?
       WHERE id = ?`;
 
-      await connection.query(updateQueryLead, [ //falta incluir uma variavel na tabela 
+      await connection.query(updateQueryLead, [
         intervaloDiarioPicoMin,
         numMaxCiclosIntervaloPico,
         capProcessamIntervaloPicoTodasAutoclavesOnLt,
@@ -93,7 +88,7 @@ async function percentUtilization(id) {
         numAutoclavesUmaEmManutencao = ?
       WHERE id = ?`;
 
-      await connection.query(updateQueryAutoclave, [ //faltam incluir 3 variaveis na tabela
+      await connection.query(updateQueryAutoclave, [
         tempoClicloCarDescMin,
         tempoDisponivelDiarioMin,
         numMaxCiclosDia,
@@ -104,7 +99,7 @@ async function percentUtilization(id) {
 
       resultados.push({
         autoclaveId: autoclave.id,
-        capUtilizTodasAutoclavesIntervaloPicoPorcent //deixar duas casas decimais 
+        capUtilizTodasAutoclavesIntervaloPicoPorcent
       });
     }
 
@@ -157,7 +152,7 @@ async function horasTrabalhoAtenderVolTotal(id) {
         estimativaVolumeTotalDiarioInstrumentalLt / volumeUtilCamaraLt)
         * tempoClicloCarDescMin) +
         tempoTestDiarioBDMin + tempoDiarioAquecimentoMaqMin) / 60)
-        / numAutoclavesUmaEmManutencao // inserir esse valor no banco de lead
+        / numAutoclavesUmaEmManutencao
 
       const updateQueryLead = `UPDATE \`lead\` SET  
       horasTrabalhoAtenderVolTotalHr = ?
@@ -170,7 +165,7 @@ async function horasTrabalhoAtenderVolTotal(id) {
 
       resultados.push({
         autoclaveId: autoclave.id,
-        horasTrabalhoAtenderVolTotalHr //arredondar
+        horasTrabalhoAtenderVolTotalHr
       });
     }
 
@@ -185,16 +180,82 @@ async function horasTrabalhoAtenderVolTotal(id) {
   }
 }
 
-/*async function recomendaçõesPorLead() {
-
-  if (percentUtilization < 90 && horasTrabalhoAtenderVolTotal < 20) {
-    console.log('As marcas recomendadas são', )
-  } else {
-    //instrução aqui  
+async function getAllBrandsAutoclaves() {
+  let connection;
+  try {
+    connection = await conn();
+    const query = `SELECT marcaAutoclave FROM \`autoclave\``;
+    const [results] = await connection.query(query);
+    return results.map((row) => row.marcaAutoclave);
+  } catch (err) {
+    console.error("Erro ao obter as marcas:", err);
+    throw err;
+  } finally {
+    if (connection) {
+      await connection.end();
+    }
   }
+}
 
-}*/
+async function getAllModelsAutoclaves() {
+  let connection;
+  try {
+    connection = await conn();
+    const query = `SELECT modeloAutoclave FROM \`autoclave\``;
+    const [results] = await connection.query(query);
+    return results.map((row) => row.modeloAutoclave);
+  } catch (err) {
+    console.error("Erro ao obter os modelos:", err);
+    throw err;
+  } finally {
+    if (connection) {
+      await connection.end();
+    }
+  }
+}
 
+async function autoclaveRecommendationByLead() {
+  try {
+    const ids = await getAllLeadIds(); //id de todos os leads
+    const marcas = await getAllBrandsAutoclaves();
+    const modelos = await getAllModelsAutoclaves();
+    const resultados = [];
+
+    for (const id of ids) { //calcula por lead percentResults e horasResults
+      const percentResults = await percentUtilizationAutoclave(id);
+      const horasResults = await horasTrabalhoAtenderVolTotal(id);
+
+      for (let i = 0; i < percentResults.length; i++) { //executa a contição enquanto houver valores no array percentual
+        const percentResult = percentResults[i];
+        const horasResult = horasResults[i];
+
+        if (percentResult.capUtilizTodasAutoclavesIntervaloPicoPorcent < 90 &&
+          horasResult.horasTrabalhoAtenderVolTotalHr < 20) {
+          const autoclaveId = percentResult.autoclaveId;
+          const modeloAutoclave = modelos[autoclaveId];
+          const marcaAutoclave = marcas[autoclaveId];
+
+          resultados.push({
+            leadId: id,
+            marcaId: marcaAutoclave,
+            modeloId: modeloAutoclave,
+            autoclaveId: percentResult.autoclaveId,
+            percentUtilizationAutoclave: percentResult.capUtilizTodasAutoclavesIntervaloPicoPorcent,
+            horasTrabalhoAtenderVolTotal: horasResult.horasTrabalhoAtenderVolTotalHr
+          });
+        }
+      }
+    }
+
+    const recomendacoes = resultados.slice(0, 3);
+
+    console.log("Resultados:", recomendacoes);
+    return recomendacoes;
+  } catch (err) {
+    console.error("Erro ao calcular as recomendações:", err);
+    throw err;
+  }
+}
 
 async function visualizarResultados() {
   try {
@@ -202,11 +263,13 @@ async function visualizarResultados() {
     const resultados = [];
 
     for (const id of ids) {
-      const resultadoPercent = await percentUtilization(id);
-      const resultadoHr = await horasTrabalhoAtenderVolTotal(id);
-      resultados.push(resultadoPercent, resultadoHr);
+      //const resultadoPercent = await percentUtilizationAutoclave(id);
+      //const resultadoHr = await horasTrabalhoAtenderVolTotal(id);
+      const resultadoRecomendacoesAuto = await autoclaveRecomendationByLead(id);
+      //resultados.push(resultadoPercent, resultadoHr, resultadoRecomendacoesAuto);
+      resultados.push(resultadoRecomendacoesAuto);
     }
-    console.log("Resultados:", resultados);
+    console.log("Recomendações:", resultados);
   } catch (err) {
     console.error("Erro ao calcular o volume total diário por lead:", err);
   }
@@ -217,5 +280,6 @@ visualizarResultados();
 
 module.exports = {
   horasTrabalhoAtenderVolTotal,
-  percentUtilization
+  percentUtilizationAutoclave,
+  autoclaveRecommendationByLead
 };

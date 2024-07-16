@@ -2,7 +2,7 @@ require("dotenv").config();
 const conn = require("../database/conn");
 const { getAllLeadIds } = require('./calculadora');
 
-async function percentUtilization(id) {
+async function percentUtilizationWasher(id) {
   let connection;
   try {
     connection = await conn();
@@ -17,10 +17,6 @@ async function percentUtilization(id) {
     if (resultsLead.length === 0) {
       return null;
     }
-
-    /*const numeroLeitoUTI = resultsLead[0].numeroLeitoUTI
-    const estimativaVolumeTotalDiárioMaterial = resultsLead[0].estimativaVolumeTotalDiárioMaterial
-    const numCirurgiasDia = resultsLead[0].numCirurgiasDia*/
 
     const { numeroLeitoUTI, estimativaVolumeTotalDiárioMaterial, numCirurgiasDia } = resultsLead[0];
 
@@ -50,32 +46,30 @@ async function percentUtilization(id) {
       //entra na tabela de lavadora
       let capacidadeProcessamUeCargaInstrumentos =
         capacidadeCargaBandejasInstrumentos /
-        numBandejasPorUe // enviar para o banco lavadora 5,0 UE - OK
-
-      
+        numBandejasPorUe // 5,0 
 
       //entra na tabela de lead
       let numCiclosInstrumentosDia =
         estimativaVolumeTotalDiárioMaterial /
-        capacidadeProcessamUeCargaInstrumentos// enviar para o banco LEAD 26 - FAZER A MUDANÇA
+        capacidadeProcessamUeCargaInstrumentos// 26
 
       let tempProcessamDemandaInstrumentosMin = numCiclosInstrumentosDia *
-        (tempMedCicloInstrumentosCargaMaxMin + intervaloMedEntreCiclos) // enviar para o banco LEAD 1826.3 - FAZER A MUDANÇA
+        (tempMedCicloInstrumentosCargaMaxMin + intervaloMedEntreCiclos) // 1826.3 
 
-      let qtdTraqueiasDia = numCirurgiasDia * qtdTraqueiasCirurgia // enviar para o banco LEAD 216 - FAZER A MUDANÇA
-      let qtdTraqueiasUtiDia = numeroLeitoUTI * qtdTraqueiasLeitoUtiDia // enviar para o banco LEAD 90 - FAZER A MUDANÇA
-      let qtdTotTraqueiasDia = qtdTraqueiasDia + qtdTraqueiasUtiDia // enviar para o banco LEAD 306 - FAZER A MUDANÇA
-      let qtdCiclosAssistVentDia = qtdTotTraqueiasDia / capacidadeCargaTraqueias // enviar para o banco LEAD 17 - FAZER A MUDANÇA
-      let demandaCiclosDia = qtdCiclosAssistVentDia + numCiclosInstrumentosDia // enviar para o banco LEAD 43 - FAZER A MUDANÇA
+      let qtdTraqueiasDia = numCirurgiasDia * qtdTraqueiasCirurgia // 216 
+      let qtdTraqueiasUtiDia = numeroLeitoUTI * qtdTraqueiasLeitoUtiDia // 90 
+      let qtdTotTraqueiasDia = qtdTraqueiasDia + qtdTraqueiasUtiDia // 306 
+      let qtdCiclosAssistVentDia = qtdTotTraqueiasDia / capacidadeCargaTraqueias // 17
+      let demandaCiclosDia = qtdCiclosAssistVentDia + numCiclosInstrumentosDia // 43 
       let tempProcessamDemandaAssistVentMin = qtdCiclosAssistVentDia *
         (tempMedCicloAssisVentCargaMaxMin +
-          intervaloMedEntreCiclos) // enviar para o banco LEAD 1190 - FAZER A MUDANÇA
+          intervaloMedEntreCiclos) // 1190
 
       let demandaTempoDiaMin = tempProcessamDemandaInstrumentosMin +
-        tempProcessamDemandaAssistVentMin // enviar para o banco LEAD 3016.3 - FAZER A MUDANÇA
-      let minutosDisponiveisTodosEquipamDia = 60 * 24 * quantidadeTermosProjeto // enviar para o banco LEAD 2880 - FAZER A MUDANÇA
+        tempProcessamDemandaAssistVentMin // 3016.3
+      let minutosDisponiveisTodosEquipamDia = 60 * 24 * quantidadeTermosProjeto // 2880
       let percentualUtilizacaoCapacidadeMax = Math.round(((demandaTempoDiaMin /
-        minutosDisponiveisTodosEquipamDia) * 100) * 100) / 100 // enviar para o banco lead
+        minutosDisponiveisTodosEquipamDia) * 100) * 100) / 100
 
       const updateQueryLead = `UPDATE \`lead\` SET 
         numCiclosInstrumentosDia = ?,
@@ -116,8 +110,8 @@ async function percentUtilization(id) {
       ]);
 
       resultados.push({
-        autoclaveId: washer.id,
-        percentualUtilizacaoCapacidadeMax //deixar duas casas decimais 
+        washerId: washer.id,
+        percentualUtilizacaoCapacidadeMax
       });
     }
 
@@ -132,15 +126,86 @@ async function percentUtilization(id) {
   }
 }
 
-/*async function recomendaçõesPorLead() {
-
-  if (percentUtilization < 90 && horasTrabalhoAtenderVolTotal < 20) {
-    console.log('As marcas recomendadas são', )
-  } else {
-    //instrução aqui  
+async function getAllBrandsWashers() {
+  let connection;
+  try {
+    connection = await conn();
+    const query = `SELECT marcaLavadora FROM \`lavadora\``;
+    const [results] = await connection.query(query);
+    return results.map((row) => row.marcaLavadora);
+  } catch (err) {
+    console.error("Erro ao obter as marcas:", err);
+    throw err;
+  } finally {
+    if (connection) {
+      await connection.end();
+    }
   }
+}
 
-}*/
+async function getAllModelsWashers() {
+  let connection;
+  try {
+    connection = await conn();
+    const query = `SELECT modeloLavadora FROM \`lavadora\``;
+    const [results] = await connection.query(query);
+    return results.map((row) => row.modeloLavadora);
+  } catch (err) {
+    console.error("Erro ao obter os modelos:", err);
+    throw err;
+  } finally {
+    if (connection) {
+      await connection.end();
+    }
+  }
+}
+
+async function washersRecommendationByLead() {
+  try {
+    const ids = await getAllLeadIds(); //id de todos os leads
+    const marcas = await getAllBrandsWashers();
+    const modelos = await getAllModelsWashers();
+    const resultados = [];
+
+    //console.log("Marcas:", marcas);
+    //console.log("Modelos:", modelos);
+
+    for (const id of ids) { //calcula por lead percentResults
+      const percentResults = await percentUtilizationWasher(id);
+
+      for (let i = 0; i < percentResults.length; i++) { //executa a contição enquanto houver valores no array percentual
+        const percentResult = percentResults[i];
+
+        if (percentResult.percentualUtilizacaoCapacidadeMax < 90) {
+          const washerId = percentResult.washerId;
+          const modeloLavadora = modelos[washerId];
+          const marcaLavadora = marcas[washerId];
+
+          const percentResults = await percentUtilizationWasher(id);
+          console.log(`Percent Results para Lavadoras para Lead ID ${id}:`, percentResults);
+
+
+          //console.log(`Lead ID: ${id}, Washer ID: ${washerId}, Marca: ${marcaLavadora}, Modelo: ${modeloLavadora}`);
+          resultados.push({
+            leadId: id,
+            marcaId: marcaLavadora,
+            modeloId: modeloLavadora,
+            washerId: percentResult.washerId,
+            percentUtilizationWasher: percentResult.percentualUtilizacaoCapacidadeMax
+          });
+        }
+      }
+    }
+
+    const recomendacoes = resultados.slice(0, 2);
+
+    console.log("Recomendações:", recomendacoes);
+    return recomendacoes;
+  } catch (err) {
+    console.error("Erro ao calcular as recomendações:", err);
+    throw err;
+  }
+}
 
 async function visualizarResultados() {
   try {
@@ -148,8 +213,10 @@ async function visualizarResultados() {
     const resultados = [];
 
     for (const id of ids) {
-      const resultadoPercent = await percentUtilization(id);
-      resultados.push(resultadoPercent);
+      //const resultadoPercent = await percentUtilizationWasher(id);
+      const resultadoRecomendacoesLav = await washersRecommendationByLead(id);
+      //resultados.push(resultadoPercent);
+      resultados.push(resultadoRecomendacoesLav);
     }
     console.log("Resultados:", resultados);
   } catch (err) {
@@ -161,5 +228,6 @@ visualizarResultados();
 
 
 module.exports = {
-  percentUtilization
+  percentUtilizationWasher,
+  washersRecommendationByLead
 };

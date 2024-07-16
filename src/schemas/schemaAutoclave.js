@@ -50,7 +50,7 @@ const Autoclave = sequelize.define('autoclave', {
         type: DataTypes.INTEGER,
         allowNull: false
     },
-    tempoDisponivelDiarioMin: { // fazer calculo no back
+    tempoDisponivelDiarioMin: {
         type: DataTypes.INTEGER,
         allowNull: true,
         defaultValue: 0
@@ -88,7 +88,6 @@ const Autoclave = sequelize.define('autoclave', {
 
 AutoclaveBrand.hasMany(Autoclave, { foreignKey: 'marcaAutoclave' });
 Autoclave.belongsTo(AutoclaveBrand, { foreignKey: 'marcaAutoclave', as: 'brand' });
-
 
 Autoclave.sync();
 
