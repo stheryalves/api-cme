@@ -47,28 +47,28 @@ async function percentUtilizationWasher(id) {
             //entra na tabela de lavadora
             let capacidadeProcessamUeCargaInstrumentos =
                 capacidadeCargaBandejasInstrumentos /
-                numBandejasPorUe // 5,0 
+                numBandejasPorUe
 
             //entra na tabela de lead
             let numCiclosInstrumentosDia =
                 estimativaVolumeTotalDiárioMaterial /
-                capacidadeProcessamUeCargaInstrumentos// 26
+                capacidadeProcessamUeCargaInstrumentos
 
             let tempProcessamDemandaInstrumentosMin = numCiclosInstrumentosDia *
-                (tempMedCicloInstrumentosCargaMaxMin + intervaloMedEntreCiclos) // 1826.3 
+                (tempMedCicloInstrumentosCargaMaxMin + intervaloMedEntreCiclos)
 
-            let qtdTraqueiasDia = numCirurgiasDia * qtdTraqueiasCirurgia // 216 
-            let qtdTraqueiasUtiDia = numeroLeitoUTI * qtdTraqueiasLeitoUtiDia // 90 
-            let qtdTotTraqueiasDia = qtdTraqueiasDia + qtdTraqueiasUtiDia // 306 
-            let qtdCiclosAssistVentDia = qtdTotTraqueiasDia / capacidadeCargaTraqueias // 17
-            let demandaCiclosDia = qtdCiclosAssistVentDia + numCiclosInstrumentosDia // 43 
+            let qtdTraqueiasDia = numCirurgiasDia * qtdTraqueiasCirurgia 
+            let qtdTraqueiasUtiDia = numeroLeitoUTI * qtdTraqueiasLeitoUtiDia  
+            let qtdTotTraqueiasDia = qtdTraqueiasDia + qtdTraqueiasUtiDia 
+            let qtdCiclosAssistVentDia = qtdTotTraqueiasDia / capacidadeCargaTraqueias 
+            let demandaCiclosDia = qtdCiclosAssistVentDia + numCiclosInstrumentosDia  
             let tempProcessamDemandaAssistVentMin = qtdCiclosAssistVentDia *
                 (tempMedCicloAssisVentCargaMaxMin +
-                    intervaloMedEntreCiclos) // 1190
+                    intervaloMedEntreCiclos) 
 
             let demandaTempoDiaMin = tempProcessamDemandaInstrumentosMin +
-                tempProcessamDemandaAssistVentMin // 3016.3
-            let minutosDisponiveisTodosEquipamDia = 60 * 24 * quantidadeTermosProjeto // 2880
+                tempProcessamDemandaAssistVentMin 
+            let minutosDisponiveisTodosEquipamDia = 60 * 24 * quantidadeTermosProjeto 
             let percentualUtilizacaoCapacidadeMax = Math.round(((demandaTempoDiaMin /
                 minutosDisponiveisTodosEquipamDia) * 100) * 100) / 100
 
@@ -168,9 +168,6 @@ async function washersRecommendationByLead() {
         const modelos = await getAllModelsWashers();
         const resultados = [];
 
-        //console.log("Marcas:", marcas);
-        //console.log("Modelos:", modelos);
-
         for (const id of ids) { //calcula por lead percentResults
             const percentResults = await percentUtilizationWasher(id);
 
@@ -183,10 +180,6 @@ async function washersRecommendationByLead() {
                     const marcaLavadora = marcas[washerId];
 
                     const percentResults = await percentUtilizationWasher(id);
-                    console.log(`Percent Results para Lavadoras para Lead ID ${id}:`, percentResults);
-
-
-                    //console.log(`Lead ID: ${id}, Washer ID: ${washerId}, Marca: ${marcaLavadora}, Modelo: ${modeloLavadora}`);
                     resultados.push({
                         leadId: id,
                         marcaId: marcaLavadora,
@@ -208,16 +201,15 @@ async function washersRecommendationByLead() {
     }
 }
 
-async function visualizarResultados() {
+/*async function visualizarResultados() {
     try {
         const ids = await getAllLeadIds();
         const resultados = [];
 
         for (const id of ids) {
-            //const resultadoPercent = await percentUtilizationWasher(id);
+            const resultadoPercent = await percentUtilizationWasher(id);
             const resultadoRecomendacoesLav = await washersRecommendationByLead(id);
-            //resultados.push(resultadoPercent);
-            resultados.push(resultadoRecomendacoesLav);
+            resultados.push(resultadoPercent, resultadoRecomendacoesLav);
         }
         console.log("Resultados:", resultados);
     } catch (err) {
@@ -225,7 +217,7 @@ async function visualizarResultados() {
     }
 }
 
-visualizarResultados();
+visualizarResultados();*/
 
 
 module.exports = {

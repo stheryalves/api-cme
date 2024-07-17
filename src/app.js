@@ -13,6 +13,7 @@ const washerBrandRoute = require('./routes/washerBrandRoute')
 const autoclaveRoute = require('./routes/autoclaveModelRoute')
 const leadRoute = require('./routes/leadRoute')
 const washerRoute = require('./routes/washerModelRoute')
+const recommentadionRoute = require('./routes/recommendationRoute')
 
 app.use(express.urlencoded({ extended: true }));
 app.use(cors())
@@ -27,5 +28,6 @@ app.use('/washerBrand', washerBrandRoute)
 app.use('/autoclaveModel', autoclaveRoute)
 app.use('/lead', leadRoute)
 app.use('/washerModel', washerRoute)
+app.use('/recomendation', recommentadionRoute)
 
 module.exports = app;

@@ -42,15 +42,15 @@ async function percentUtilizationAutoclave(id) {
             } = autoclave;
 
             //entra na tabela de autoclave
-            let tempoClicloCarDescMin = tempoCargaDescargaMin + medTotTempoCicloATMin // 60 min
-            let tempoDisponivelDiarioMin = (24 * 60) - (tempoDiarioAquecimentoMaqMin + tempoTestDiarioBDMin) // 1390
-            let numMaxCiclosDia = tempoDisponivelDiarioMin / tempoClicloCarDescMin // 23.17
-            let aproveitamentoCamaraPorcent = (volumeUtilCamaraLt / volumeTotCamaraLt) * 100 // 79
-            let numAutoclavesUmaEmManutencao = numAutoclaves - 1 // 2
+            let tempoClicloCarDescMin = tempoCargaDescargaMin + medTotTempoCicloATMin
+            let tempoDisponivelDiarioMin = (24 * 60) - (tempoDiarioAquecimentoMaqMin + tempoTestDiarioBDMin)
+            let numMaxCiclosDia = tempoDisponivelDiarioMin / tempoClicloCarDescMin
+            let aproveitamentoCamaraPorcent = (volumeUtilCamaraLt / volumeTotCamaraLt) * 100
+            let numAutoclavesUmaEmManutencao = numAutoclaves - 1 
 
             //entra na tabela de lead
             let intervaloDiarioPicoMin = (intervaloPicoCME * 60) -
-                (tempoTestDiarioBDMin + tempoDiarioAquecimentoMaqMin) // 670
+                (tempoTestDiarioBDMin + tempoDiarioAquecimentoMaqMin)
 
             let numMaxCiclosIntervaloPico = intervaloDiarioPicoMin / tempoClicloCarDescMin
 
@@ -257,17 +257,16 @@ async function autoclaveRecommendationByLead() {
     }
 }
 
-async function visualizarResultados() {
+/*async function visualizarResultados() {
     try {
         const ids = await getAllLeadIds();
         const resultados = [];
 
         for (const id of ids) {
-            //const resultadoPercent = await percentUtilizationAutoclave(id);
-            //const resultadoHr = await horasTrabalhoAtenderVolTotal(id);
+            const resultadoPercent = await percentUtilizationAutoclave(id);
+            const resultadoHr = await horasTrabalhoAtenderVolTotal(id);
             const resultadoRecomendacoesAuto = await autoclaveRecommendationByLead(id);
-            //resultados.push(resultadoPercent, resultadoHr, resultadoRecomendacoesAuto);
-            resultados.push(resultadoRecomendacoesAuto);
+            resultados.push(resultadoPercent, resultadoHr, resultadoRecomendacoesAuto);
         }
         console.log("Recomendações:", resultados);
     } catch (err) {
@@ -275,7 +274,7 @@ async function visualizarResultados() {
     }
 }
 
-visualizarResultados();
+visualizarResultados();*/
 
 
 module.exports = {

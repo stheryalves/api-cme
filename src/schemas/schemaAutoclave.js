@@ -65,9 +65,9 @@ const Autoclave = sequelize.define('autoclave', {
         allowNull: true,
         defaultValue: 0.0
     },
-    numAutoclaves: { // quem preenche é o dono do negocio - colocar os campo NN como obrigatorios na dashboard
-        type: DataTypes.INTEGER, // preciso desse preenchimento para executar outras contas e popular o banco se 
-        allowNull: true, // entrarem marcas novas de autoclaves e lavadoras
+    numAutoclaves: { 
+        type: DataTypes.INTEGER,
+        allowNull: true,
         defaultValue: 0
     },
     numAutoclavesUmaEmManutencao: {

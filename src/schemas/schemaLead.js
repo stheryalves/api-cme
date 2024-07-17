@@ -202,7 +202,7 @@ const Lead = sequelize.define('lead', {
         allowNull: true,
         defaultValue: 0.0
     },
-    numCiclosInstrumentosDia: { // começa aqui
+    numCiclosInstrumentosDia: {
         type: DataTypes.INTEGER,
         allowNull: true,
         defaultValue: 0
