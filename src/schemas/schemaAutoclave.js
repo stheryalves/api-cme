@@ -1,18 +1,18 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../database/sequelize');
-const Brand = require('./schemaBrand');
+const AutoclaveBrand = require('./schemaAutoclaveBrand');
 
 const Autoclave = sequelize.define('autoclave', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
-        autoIncrement: true
+        autoIncrement: true,
     },
     marcaAutoclave: {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-            model: Brand,
+            model: AutoclaveBrand,
             key: 'id'
         }
     },
@@ -55,26 +55,7 @@ const Autoclave = sequelize.define('autoclave', {
         allowNull: true,
         defaultValue: 0
     },
-    producaoHospitalVolDiarioMaterialLt: {
-        type: DataTypes.INTEGER,
-        allowNull: false
-    },
-    volumeProcessadoIntervaloPicoLt90totDiario: {
-        type: DataTypes.INTEGER,
-        allowNull: true,
-        defaultValue: 0
-    },
-    intervaloDiarioPicoMin: {
-        type: DataTypes.INTEGER,
-        allowNull: true,
-        defaultValue: 0
-    },
     numMaxCiclosDia: {
-        type: DataTypes.FLOAT,
-        allowNull: true,
-        defaultValue: 0.0
-    },
-    numMaxCiclosIntervaloPico: {
         type: DataTypes.FLOAT,
         allowNull: true,
         defaultValue: 0.0
@@ -84,32 +65,18 @@ const Autoclave = sequelize.define('autoclave', {
         allowNull: true,
         defaultValue: 0.0
     },
-    numAutoclaves: {
-        type: DataTypes.INTEGER,
-        allowNull: false
+    numAutoclaves: { // quem preenche é o dono do negocio - colocar os campo NN como obrigatorios na dashboard
+        type: DataTypes.INTEGER, // preciso desse preenchimento para executar outras contas e popular o banco se 
+        allowNull: true, // entrarem marcas novas de autoclaves e lavadoras
+        defaultValue: 0
     },
     numAutoclavesUmaEmManutencao: {
         type: DataTypes.INTEGER,
         allowNull: true,
         defaultValue: 0
     },
-    capProcessamIntervaloPicoTodasAutoclavesOnLt: {
-        type: DataTypes.INTEGER,
-        allowNull: true,
-        defaultValue: 0
-    },
-    horasTrabalhoAtenderVolTotalHr: {
-        type: DataTypes.INTEGER,
-        allowNull: true,
-        defaultValue: 0
-    },
-    capUtilizTodasAutoclavesIntervaloPicoPorcent: {
-        type: DataTypes.FLOAT,
-        allowNull: true,
-        defaultValue: 0.0
-    },
     preco: {
-        type: DataTypes.FLOAT,
+        type: DataTypes.FLOAT, // se for faixa de preço mudar para string
         allowNull: true,
         defaultValue: 0.0
     },
@@ -118,6 +85,9 @@ const Autoclave = sequelize.define('autoclave', {
     tableName: 'autoclave',
     timestamps: true,
 });
+
+AutoclaveBrand.hasMany(Autoclave, { foreignKey: 'marcaAutoclave' });
+Autoclave.belongsTo(AutoclaveBrand, { foreignKey: 'marcaAutoclave', as: 'brand' });
 
 Autoclave.sync();
 

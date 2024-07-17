@@ -38,7 +38,7 @@ const createOneLead = async (req, res) => {
         if (existingLead) {
             return res.status(409).json({ message: 'O Cliente já obteve orçamento.' });
         }
-
+        //todo calc if calc ok create client in schema
         if (Object.keys(lead).length > 0) {
             const newLead = await Lead.create(lead);
             res.status(201).json(newLead);

@@ -1,3 +1,4 @@
+
 const Washer = require('../schemas/schemaWasher');
 
 const getWasherModels = async (req, res) => {

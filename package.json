@@ -4,7 +4,10 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon src/server.js"
+    "start": "nodemon src/server.js",
+    "calc": "nodemon src/utils/calculadora.js",
+    "auto": "nodemon src/utils/autoclaveCalc.js",
+    "lav": "nodemon src/utils/washerCalc.js"
   },
   "keywords": [],
   "author": "",

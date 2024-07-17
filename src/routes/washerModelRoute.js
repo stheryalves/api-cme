@@ -1,3 +1,4 @@
+
 const express = require('express');
 const router = express.Router();
 const { getWasherModels, getOneWasherModel, createOneWasherModel, updateOneWasherModel, deleteOneWasherModel } = require('../controllers/washerModelController');
