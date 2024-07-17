@@ -1,6 +1,6 @@
 const Lead = require('../schemas/schemaLead');
 
-const getLeads = async (req, res) => {
+const getLeads = async (_, res) => {
     try {
         const leads = await Lead.findAll();
         res.status(200).json(leads);

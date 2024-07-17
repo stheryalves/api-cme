@@ -166,7 +166,7 @@ async function calculoVolumeTotalDiarioPorLead(id) {
     }
 }
 
-async function visualizarResultados() {
+/*async function visualizarResultados() {
     try {
         const ids = await getAllLeadIds();
         const resultados = [];
@@ -180,7 +180,7 @@ async function visualizarResultados() {
         console.error("Erro ao calcular o volume total diário por lead:", err);
     }
 }
-visualizarResultados();
+visualizarResultados();*/
 
 module.exports = {
     getAllLeadIds,
