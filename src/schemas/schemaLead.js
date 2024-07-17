@@ -57,7 +57,7 @@ const Lead = sequelize.define('lead', {
         type: DataTypes.STRING(45),
         allowNull: false
     },
-    numeroSalasCirurgias: { //ver com elias essa variavel numeroSalasCirurgicas
+    numeroSalasCirurgicas: { 
         type: DataTypes.INTEGER,
         allowNull: false
     },

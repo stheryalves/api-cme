@@ -23,7 +23,7 @@ async function calculoVolumeTotalDiarioPorLead(id) {
     try {
         connection = await conn();
         const query = `SELECT 
-            numeroSalasCirurgias, 
+            numeroSalasCirurgicas, 
             numeroCirurgiaSalaDia, 
             numeroLeitoUTI, 
             numeroLeitoInternacao, 
@@ -45,14 +45,14 @@ async function calculoVolumeTotalDiarioPorLead(id) {
 
         const row = results[0];
 
-        let numeroSalasCirurgias = row.numeroSalasCirurgias;
+        let numeroSalasCirurgicas = row.numeroSalasCirurgicas;
         let numeroCirurgiaSalaDia = row.numeroCirurgiaSalaDia;
         let numeroLeitoUTI = row.numeroLeitoUTI;
         let numeroLeitoInternacao = row.numeroLeitoInternacao;
         let numeroLeitoRPA = row.numeroLeitoRPA;
         let numeroLeitoObs = row.numeroLeitoObs;
         let numeroLeitoHospitalDia = row.numeroLeitoHospitalDia;
-        let numCirurgiasDia = numeroSalasCirurgias * numeroCirurgiaSalaDia;
+        let numCirurgiasDia = numeroSalasCirurgicas * numeroCirurgiaSalaDia;
 
         let numLeitosTotais =
             numeroLeitoUTI +

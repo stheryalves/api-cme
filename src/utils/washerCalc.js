@@ -177,7 +177,7 @@ async function washersRecommendationByLead() {
             for (let i = 0; i < percentResults.length; i++) { //executa a contição enquanto houver valores no array percentual
                 const percentResult = percentResults[i];
 
-                if (percentResult.percentualUtilizacaoCapacidadeMax < 90) {
+                if (percentResult.percentualUtilizacaoCapacidadeMax > 89) {
                     const washerId = percentResult.washerId;
                     const modeloLavadora = modelos[washerId];
                     const marcaLavadora = marcas[washerId];

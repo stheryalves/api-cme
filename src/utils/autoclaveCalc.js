@@ -229,7 +229,7 @@ async function autoclaveRecommendationByLead() {
                 const percentResult = percentResults[i];
                 const horasResult = horasResults[i];
 
-                if (percentResult.capUtilizTodasAutoclavesIntervaloPicoPorcent < 90 &&
+                if (percentResult.capUtilizTodasAutoclavesIntervaloPicoPorcent > 89 &&
                     horasResult.horasTrabalhoAtenderVolTotalHr < 20) {
                     const autoclaveId = percentResult.autoclaveId;
                     const modeloAutoclave = modelos[autoclaveId];
@@ -265,7 +265,7 @@ async function visualizarResultados() {
         for (const id of ids) {
             //const resultadoPercent = await percentUtilizationAutoclave(id);
             //const resultadoHr = await horasTrabalhoAtenderVolTotal(id);
-            const resultadoRecomendacoesAuto = await autoclaveRecomendationByLead(id);
+            const resultadoRecomendacoesAuto = await autoclaveRecommendationByLead(id);
             //resultados.push(resultadoPercent, resultadoHr, resultadoRecomendacoesAuto);
             resultados.push(resultadoRecomendacoesAuto);
         }
