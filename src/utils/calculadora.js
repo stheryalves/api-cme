@@ -92,7 +92,7 @@ async function calculoVolumeTotalDiario(id) {
             id,
             leadProject 
         ) {
-            const insertQuery = `INSERT INTO \`calculo_projeto\` (
+            const insertQuery = `INSERT INTO calculo_projeto (
                 id,
                 numCirurgiasDia,
                 volumeTotalDiarioCirurgias,

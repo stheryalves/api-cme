@@ -76,6 +76,16 @@ const LeadCalcWasher = sequelize.define('calculo_lavadora', {
             key: 'id'
         }
     },
+    createdAt: {
+        type: DataTypes.DATE,
+        allowNull: true,
+        defaultValue: DataTypes.NOW,
+    },
+    updatedAt: {
+        type: DataTypes.DATE,
+        allowNull: true,
+        defaultValue: DataTypes.NOW,
+    },
 }, {
     tableName: 'calculo_lavadora',
     timestamps: true

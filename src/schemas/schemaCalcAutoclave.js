@@ -46,6 +46,16 @@ const LeadCalcAutoclave = sequelize.define('calculo_autoclave', {
             key: 'id'
         }
     },
+    createdAt: {
+        type: DataTypes.DATE,
+        allowNull: true,
+        defaultValue: DataTypes.NOW,
+    },
+    updatedAt: {
+        type: DataTypes.DATE,
+        allowNull: true,
+        defaultValue: DataTypes.NOW,
+    },
 }, {
     tableName: 'calculo_autoclave',
     timestamps: true
